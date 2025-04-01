@@ -39,7 +39,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "d:/Graphics/2509311/build/x64-debug"
+			"value" : "d:/Graphics/ComputerGraphics1/build/x64-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -123,11 +123,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "CXX compiler"
 				}
 			],
 			"type" : "STRING",
-			"value" : "cl.exe"
+			"value" : "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/bin/Hostx64/x64/cl.exe"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS",
@@ -235,11 +235,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "C compiler"
 				}
 			],
 			"type" : "STRING",
-			"value" : "cl.exe"
+			"value" : "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/bin/Hostx64/x64/cl.exe"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS",
@@ -467,7 +467,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "D:/Graphics/2509311/build/x64-debug/CMakeFiles/pkgRedirects"
+			"value" : "D:/Graphics/ComputerGraphics1/build/x64-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -527,7 +527,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "D:/Graphics/2509311"
+			"value" : "D:/Graphics/ComputerGraphics1"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -539,7 +539,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "D:/Graphics/2509311/install/x64-debug"
+			"value" : "D:/Graphics/ComputerGraphics1/install/x64-debug"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -1059,10 +1059,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "The CMake toolchain file"
 				}
 			],
-			"type" : "STRING",
+			"type" : "FILEPATH",
 			"value" : "C:/Users/sbss0/Documents/vcpkg/scripts/buildsystems/vcpkg.cmake"
 		},
 		{
@@ -1091,7 +1091,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "D:/Graphics/2509311/build/x64-debug/vcpkg_installed/x64-windows/share/fltk"
+			"value" : "D:/Graphics/ComputerGraphics1/build/x64-debug/vcpkg_installed/x64-windows/share/fltk"
 		},
 		{
 			"name" : "VCPKG_APPLOCAL_DEPS",
@@ -1127,7 +1127,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "D:/Graphics/2509311/build/x64-debug/vcpkg_installed"
+			"value" : "D:/Graphics/ComputerGraphics1/build/x64-debug/vcpkg_installed"
 		},
 		{
 			"name" : "VCPKG_INSTALL_OPTIONS",
@@ -1151,7 +1151,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "D:/Graphics/2509311"
+			"value" : "D:/Graphics/ComputerGraphics1"
 		},
 		{
 			"name" : "VCPKG_MANIFEST_INSTALL",
@@ -1371,7 +1371,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "D:/Graphics/2509311/build/x64-debug/vcpkg_installed"
+			"value" : "D:/Graphics/ComputerGraphics1/build/x64-debug/vcpkg_installed"
 		},
 		{
 			"name" : "glm_DIR",
@@ -1383,7 +1383,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "D:/Graphics/2509311/build/x64-debug/vcpkg_installed/x64-windows/share/glm"
+			"value" : "D:/Graphics/ComputerGraphics1/build/x64-debug/vcpkg_installed/x64-windows/share/glm"
 		},
 		{
 			"name" : "lab_BINARY_DIR",
@@ -1395,7 +1395,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "D:/Graphics/2509311/build/x64-debug"
+			"value" : "D:/Graphics/ComputerGraphics1/build/x64-debug"
 		},
 		{
 			"name" : "lab_IS_TOP_LEVEL",
@@ -1419,7 +1419,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "D:/Graphics/2509311"
+			"value" : "D:/Graphics/ComputerGraphics1"
 		}
 	],
 	"kind" : "cache",

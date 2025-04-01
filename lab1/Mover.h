@@ -60,22 +60,57 @@ public:
 		return false;
 	}
 
-	bool CheckMapBound()
+	bool CheckMapBoundX()
 	{
 		if (m_position.x > MAX_AREA ||
-			m_position.x < -MAX_AREA ||
-			m_position.z > MAX_AREA ||
+			m_position.x < -MAX_AREA)
+			return true;
+		return false;
+	}
+
+	bool CheckMapBoundZ()
+	{
+		if (m_position.z > MAX_AREA ||
 			m_position.z < -MAX_AREA)
+			return true;
+		return false;
+	}
+
+	bool CheckMapBound()
+	{
+		if (CheckMapBoundX() || CheckMapBoundZ())
 			return true;
 		return false;
 	}
 
 	bool CheckEdges()
 	{
-		if (CheckFloor() || CheckMapBound())
+		if (CheckFloor())
+			return true;
+		if (CheckMapBound())
 			return true;
 
 		return false;
+	}
+
+	enum class BounceType
+	{
+		NONE,
+		BOUNCE_FLOOR,
+		BOUNCE_MAP_BOUND_X,
+		BOUNCE_MAP_BOUND_Z,
+	};
+
+	BounceType CheckEdge()
+	{
+		if (CheckFloor())
+			return BounceType::BOUNCE_FLOOR;
+		if (CheckMapBoundX())
+			return BounceType::BOUNCE_MAP_BOUND_X;
+		if (CheckMapBoundZ())
+			return BounceType::BOUNCE_MAP_BOUND_Z;
+
+		return BounceType::NONE;
 	}
 
 	void MakeBounce()
@@ -99,6 +134,42 @@ public:
 		}
 	}
 
+	void MakeBounce(BounceType _colAt)
+	{
+		cyclone::Vector3 checkposition;
+		cyclone::Vector3 vel;
+		m_particle->getPosition(&checkposition);
+		m_particle->getVelocity(&vel);
+
+		switch (_colAt)
+		{
+		case Mover::BounceType::NONE:
+			break;
+		case Mover::BounceType::BOUNCE_FLOOR:
+			checkposition.y = m_size;
+			m_particle->setPosition(checkposition);
+			vel.y = vel.y * (-1);
+			m_particle->setVelocity(vel);
+			break;
+		case Mover::BounceType::BOUNCE_MAP_BOUND_X:
+			checkposition.x -= m_size;
+			m_particle->setPosition(checkposition);
+			vel.x = vel.x * (-1);
+			m_particle->setVelocity(vel);
+			break;
+		case Mover::BounceType::BOUNCE_MAP_BOUND_Z:
+			checkposition.z -= m_size;
+			m_particle->setPosition(checkposition);
+			vel.z = vel.z * (-1);
+			m_particle->setVelocity(vel);
+			break;
+		default:
+			break;
+		}
+	}
+
+
+
 
 	/// <summary>
 	/// 적분하는 함수(delta_t)
@@ -110,11 +181,12 @@ public:
 
 		m_particle->integrate(_delta_t);
 		//m_particle->setPosition(m_particle->getPosition() + cyclone::Vector3(0.5, 0, 0));
-		//m_particle->addForce(cyclone::Vector3(1,0,0));
-		if (CheckEdges())
-		{
-			MakeBounce();
-		}
+		m_particle->addForce(cyclone::Vector3(1,0,0));
+		//if (CheckEdges())
+		//{
+		//	MakeBounce();
+		//}
+		MakeBounce(CheckEdge());
 	}
 
 
