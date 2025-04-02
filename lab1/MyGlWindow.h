@@ -48,6 +48,7 @@ private:
 	Viewer *m_viewer;
 
 	Mover* m_mover;
+	std::vector<Mover*> m_movers;
 
 	void putText(char* string, int x, int y, float r, float g, float b);
 	void setProjection(int clearProjection = 1);

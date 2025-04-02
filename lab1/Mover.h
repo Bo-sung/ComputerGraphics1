@@ -20,31 +20,28 @@ public:
 		m_size = 2.0;
 		m_particle = new cyclone::Particle();
 
-		m_particle->setPosition(5, 20, 0);	// 초기 위치
-		m_particle->setVelocity(0, 0, 0);	// 초기 속도
-		m_particle->setMass(1.0f);			// 질량
-		m_particle->setDamping(0.9f);		// 댐핑
-		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
+		//Artillery
+		m_particle->setMass(200.0f); // 200.0kg
+		m_particle->setVelocity(0.0f, 30.0f, 40.0f); // 50m/s
+		m_particle->setAcceleration(0.0f, -20.0f, 0.0f);
+		m_particle->setDamping(0.99f);
 	};
 	Mover()
 	{
-		m_position = cyclone::Vector3(0, 10, 0);
+		m_position = cyclone::Vector3(0, 100, 0);
 		m_size = 2.0;
 		m_particle = new cyclone::Particle();
 
-		m_particle->setPosition(5, 20, 0);	// 초기 위치
-		m_particle->setVelocity(0, 0, 0);	// 초기 속도
-		m_particle->setMass(1.0f);			// 질량
-		m_particle->setDamping(0.9f);		// 댐핑
-		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
+		//Artillery
+		m_particle->setMass(200.0f); // 200.0kg
+		m_particle->setVelocity(0.0f, 30.0f, 40.0f); // 50m/s
+		m_particle->setAcceleration(0.0f, -20.0f, 0.0f);
+		m_particle->setDamping(0.99f);
 	};
 	~Mover() {};
 
 
 
-	cyclone::Vector3 m_position;
-	cyclone::Particle* m_particle;
-	float m_size;
 	cyclone::Vector3 m_position;
 	cyclone::Particle* m_particle;
 	float m_size;
@@ -181,12 +178,6 @@ public:
 		static cyclone::Vector3 DEFAULT_POSITION = cyclone::Vector3(0, 3, 0);
 
 		m_particle->integrate(_delta_t);
-		//m_particle->setPosition(m_particle->getPosition() + cyclone::Vector3(0.5, 0, 0));
-		//m_particle->addForce(cyclone::Vector3(1,0,0));
-		if (CheckEdges())
-		{
-			MakeBounce();
-		}
 	}
 
 

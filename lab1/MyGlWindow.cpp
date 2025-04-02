@@ -31,9 +31,6 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	float aspect = (w / (float)h);
 	m_viewer = new Viewer(viewPoint, viewCenter, upVector, 45.0f, aspect);
 
-	m_mover = new Mover();
-
-
 
 	TimingData::init();
 	run = 0;
@@ -43,7 +40,6 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 
 void MyGlWindow::setupLight(float x, float y, float z)
 {
-
 	// set up the lighting
 	GLfloat lightPosition[] = { 500, 900.0, 500, 1.0 };
 	GLfloat lightPosition2[] = { 1, 0, 0, 0 };
@@ -183,10 +179,30 @@ void MyGlWindow::draw()
 
 	//draw shadow
 	setupShadows();
-	m_mover->draw(1);
+	for (int i = 0; i < m_movers.size(); i++)
+	{
+		if (m_movers[i] == NULL)
+		{
+			continue;
+		}
+		m_movers[i]->draw(1);
+	}
+
 	unsetupShadows();
 
-	m_mover->draw(0);
+	for (int i = 0; i < m_movers.size(); i++)
+	{
+		if (m_movers[i] == NULL)
+		{
+			continue;
+		}
+		m_movers[i]->draw(0);
+	}
+
+	if (m_mover != NULL)
+	{
+		m_mover->draw(0);
+	}
 
 	glDisable(GL_BLEND);
 
@@ -206,12 +222,12 @@ void MyGlWindow::draw()
 
 void MyGlWindow::test()
 {
-
+	auto projectile = new Mover(cyclone::Vector3(0,30,0));
+	m_movers.push_back(projectile);
 }
 
 void MyGlWindow::update()
 {
-
 	TimingData::get().update();
 
 	if (!run)
@@ -220,7 +236,19 @@ void MyGlWindow::update()
 	float duration = (float)TimingData::get().lastFrameDuration * 0.003;
 	if (duration <= 0.0f) return;
 	
-	m_mover->Update(duration);
+	for (int i = 0; i < m_movers.size(); i++)
+	{
+		if (m_movers[i] == NULL)
+		{
+			continue;
+		}
+		m_movers[i]->Update(duration);
+	}
+
+	if (m_mover != NULL)
+	{
+		m_mover->Update(duration);
+	}
 }
 
 

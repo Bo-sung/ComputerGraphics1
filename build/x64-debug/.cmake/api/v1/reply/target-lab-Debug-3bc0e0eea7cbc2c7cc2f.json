@@ -117,16 +117,16 @@
 			[
 				{
 					"backtrace" : 12,
-					"path" : "D:/Graphics/2509311/Cyclone"
+					"path" : "D:/Graphics/ComputerGraphics1/Cyclone"
 				},
 				{
 					"backtrace" : 12,
-					"path" : "D:/Graphics/2509311/lab1"
+					"path" : "D:/Graphics/ComputerGraphics1/lab1"
 				},
 				{
 					"backtrace" : 3,
 					"isSystem" : true,
-					"path" : "D:/Graphics/2509311/build/x64-debug/vcpkg_installed/x64-windows/include"
+					"path" : "D:/Graphics/ComputerGraphics1/build/x64-debug/vcpkg_installed/x64-windows/include"
 				}
 			],
 			"language" : "CXX",
