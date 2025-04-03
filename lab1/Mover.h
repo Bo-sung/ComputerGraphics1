@@ -8,6 +8,7 @@
 
 #include "core.h"
 #include "particle.h"
+#include "PhysicsObject.h"
 
 class Mover
 {
@@ -44,9 +45,7 @@ public:
 
 	cyclone::Vector3 m_position;
 	cyclone::Particle* m_particle;
-	float m_size;
-	cyclone::Vector3 m_position;
-	cyclone::Particle* m_particle;
+
 	float m_size;
 
 	void MovePosition(cyclone::Vector3 _position)

@@ -117,16 +117,16 @@
 			[
 				{
 					"backtrace" : 12,
-					"path" : "D:/Graphics/2509311/Cyclone"
+					"path" : "D:/Graphics/ComputerGraphics1/Cyclone"
 				},
 				{
 					"backtrace" : 12,
-					"path" : "D:/Graphics/2509311/lab1"
+					"path" : "D:/Graphics/ComputerGraphics1/lab1"
 				},
 				{
 					"backtrace" : 3,
 					"isSystem" : true,
-					"path" : "D:/Graphics/2509311/build/x64-debug/vcpkg_installed/x64-windows/include"
+					"path" : "D:/Graphics/ComputerGraphics1/build/x64-debug/vcpkg_installed/x64-windows/include"
 				}
 			],
 			"language" : "CXX",
@@ -155,13 +155,13 @@
 				27,
 				29,
 				31,
-				34,
-				36,
-				38,
-				40,
+				35,
+				37,
+				39,
 				42,
-				43,
-				45
+				44,
+				45,
+				47
 			]
 		}
 	],
@@ -291,11 +291,13 @@
 				28,
 				30,
 				32,
-				37,
-				39,
+				33,
+				38,
+				40,
 				41,
-				44,
-				46
+				43,
+				46,
+				48
 			]
 		},
 		{
@@ -317,21 +319,21 @@
 				27,
 				29,
 				31,
-				34,
-				36,
-				38,
-				40,
+				35,
+				37,
+				39,
 				42,
-				43,
-				45
+				44,
+				45,
+				47
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				33,
-				35
+				34,
+				36
 			]
 		}
 	],
@@ -519,6 +521,11 @@
 		},
 		{
 			"backtrace" : 2,
+			"path" : "lab1/ColisionChecker.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
 			"path" : "lab1/DrawUtils.H",
 			"sourceGroupIndex" : 2
 		},
@@ -553,6 +560,11 @@
 		{
 			"backtrace" : 2,
 			"path" : "lab1/MyGlWindow.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"path" : "lab1/PhysicsObject.h",
 			"sourceGroupIndex" : 0
 		},
 		{

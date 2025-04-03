@@ -39,7 +39,7 @@ file(GLOB_RECURSE SOURCES
 
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/Cyclone/"  "${CMAKE_CURRENT_SOURCE_DIR}/${CURRENT}")
 
-add_executable(${PROJECT_NAME} ${SOURCES}  "lab1/Mover.h")
+add_executable(${PROJECT_NAME} ${SOURCES}  "lab1/Mover.h" "lab1/PhysicsObject.h" "lab1/ColisionChecker.h")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE fltk fltk_gl fltk_forms fltk_images glm::glm)
  
