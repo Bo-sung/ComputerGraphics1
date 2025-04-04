@@ -12,89 +12,58 @@
 class Mover
 {
 public:
-
-	const float MAX_AREA = 100.0f;
+	// constructors
 	Mover(cyclone::Vector3 _position)
 	{
 		m_position = _position;
-		m_size = 2.0;
-		m_particle = new cyclone::Particle();
-
-		m_particle->setPosition(5, 20, 0);	// 초기 위치
-		m_particle->setVelocity(0, 0, 0);	// 초기 속도
-		m_particle->setMass(1.0f);			// 질량
-		m_particle->setDamping(0.9f);		// 댐핑
-		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
+		Init();
+	};
+	Mover(cyclone::Vector3 _position, int _instanceID)
+	{
+		m_position = _position;
+		m_instanceID = _instanceID;
+		Init();
+	};
+	Mover(int _instanceID)
+	{
+		m_instanceID = _instanceID;
+		Init();
 	};
 	Mover()
+	{
+		Init();
+	};
+	~Mover() {};
+
+private:
+	struct GLfloat3
+	{
+		GLfloat r;
+		GLfloat g;
+		GLfloat b;
+	};
+
+	int m_instanceID = -1;
+	void Init()
 	{
 		m_position = cyclone::Vector3(0, 10, 0);
 		m_size = 2.0;
 		m_particle = new cyclone::Particle();
-
 		m_particle->setPosition(5, 20, 0);	// 초기 위치
 		m_particle->setVelocity(0, 0, 0);	// 초기 속도
 		m_particle->setMass(1.0f);			// 질량
 		m_particle->setDamping(0.9f);		// 댐핑
 		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
-	};
-	~Mover() {};
-
-
-
-	cyclone::Vector3 m_position;
-	cyclone::Particle* m_particle;
-	float m_size;
-	cyclone::Vector3 m_position;
-	cyclone::Particle* m_particle;
-	float m_size;
-
-	void MovePosition(cyclone::Vector3 _position)
-	{
-		m_position += _position;
+		m_meshColor = { 1.0f, 0.0f, 0.0f };	// 색상
+		m_shadowColor = { 0.2f, 0.2f, 0.2f };	// 그림자 색상
 	}
 
-	bool CheckFloor()
-	{
-		if (m_position.y - m_size < 0)
-		{
-			return true;
-		}
-		return false;
-	}
-
-	bool CheckMapBoundX()
-	{
-		if (m_position.x > MAX_AREA ||
-			m_position.x < -MAX_AREA)
-			return true;
-		return false;
-	}
-
-	bool CheckMapBoundZ()
-	{
-		if (m_position.z > MAX_AREA ||
-			m_position.z < -MAX_AREA)
-			return true;
-		return false;
-	}
-
-	bool CheckMapBound()
-	{
-		if (CheckMapBoundX() || CheckMapBoundZ())
-			return true;
-		return false;
-	}
-
-	bool CheckEdges()
-	{
-		if (CheckFloor())
-			return true;
-		if (CheckMapBound())
-			return true;
-
-		return false;
-	}
+	void SetColor(GLfloat3 _color)	{ glColor3f(_color.r, _color.g, _color.b); }
+	bool CheckFloor()				{ return m_position.y - m_size < 0; }
+	bool CheckMapBoundX()			{ return m_position.x > MAX_AREA || m_position.x < -MAX_AREA; }
+	bool CheckMapBoundZ()			{ return m_position.z > MAX_AREA || m_position.z < -MAX_AREA; }
+	bool CheckMapBound()			{ return CheckMapBoundX() || CheckMapBoundZ(); }
+	bool CheckEdges()				{ return CheckFloor() || CheckMapBound(); }
 
 	enum class BounceType
 	{
@@ -171,9 +140,28 @@ public:
 		}
 	}
 
+public:
+
+	// constants
+	const float MAX_AREA = 100.0f;
+
+	// components
+	cyclone::Vector3 m_position;
+	cyclone::Particle* m_particle;
+
+	// variables
+	float m_size;
+	GLfloat3 m_meshColor;
+	GLfloat3 m_shadowColor;
+
+
+	void MovePosition(cyclone::Vector3 _position)
+	{
+		m_position += _position;
+	}
 
 	/// <summary>
-	/// 적분하는 함수(delta_t)
+	/// 업데이트 처리(delta_t)
 	/// </summary>
 	/// <param name="duration"></param>
 	void Update(float _delta_t)
@@ -181,30 +169,36 @@ public:
 		static cyclone::Vector3 DEFAULT_POSITION = cyclone::Vector3(0, 3, 0);
 
 		m_particle->integrate(_delta_t);
-		//m_particle->setPosition(m_particle->getPosition() + cyclone::Vector3(0.5, 0, 0));
-		//m_particle->addForce(cyclone::Vector3(1,0,0));
-		if (CheckEdges())
-		{
-			MakeBounce();
-		}
+		MakeBounce(CheckEdge());
 	}
-
 
 	void draw(int shadow)
 	{
 		cyclone::Vector3 position;
 		m_particle->getPosition(&position);
 		m_position = position;
-		if (shadow)
+
+		if (!shadow)
 		{
-			glColor3f(0.2, 0.2, 0.2);
+			// 색상 설정
+			SetColor(m_meshColor);
+
+			if (m_instanceID == -1)
+			{
+				glLoadName(0);
+			}
+			else
+			{
+				glLoadName(m_instanceID);
+			}
 		}
 		else
 		{
-			glColor3f(1, 0, 0);
+			SetColor(m_shadowColor);
+			glColor3f(0.2, 0.2, 0.2);
 		}
 
-		// 위치 이동, 로테이션, 크기변경과 같은 Transform을 변경하려변 glPushMatrix()와 glPopMatrix() 사이에 작성
+		// 이동 관련된 처리는 glPushMatrix()와 glPopMatrix() 사이에 처리해야 한다.
 		glPushMatrix();
 		glTranslatef(m_position.x, m_position.y, m_position.z);
 		glutSolidSphere(m_size, 20, 20);
