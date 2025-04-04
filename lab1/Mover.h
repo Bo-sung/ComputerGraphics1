@@ -11,32 +11,41 @@
 
 class Mover
 {
+private:
+	int m_instanceID = -1;
+	void Init()
+	{
+		m_position = cyclone::Vector3(0, 10, 0);
+		m_size = 2.0;
+		m_particle = new cyclone::Particle();
+		m_particle->setPosition(5, 20, 0);	// 초기 위치
+		m_particle->setVelocity(0, 0, 0);	// 초기 속도
+		m_particle->setMass(1.0f);			// 질량
+		m_particle->setDamping(0.9f);		// 댐핑
+		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
+	}
 public:
 
 	const float MAX_AREA = 100.0f;
 	Mover(cyclone::Vector3 _position)
 	{
 		m_position = _position;
-		m_size = 2.0;
-		m_particle = new cyclone::Particle();
-
-		m_particle->setPosition(5, 20, 0);	// 초기 위치
-		m_particle->setVelocity(0, 0, 0);	// 초기 속도
-		m_particle->setMass(1.0f);			// 질량
-		m_particle->setDamping(0.9f);		// 댐핑
-		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
+		Init();
+	};
+	Mover(cyclone::Vector3 _position, int _instanceID)
+	{
+		m_position = _position;
+		m_instanceID = _instanceID;
+		Init();
+	};
+	Mover(int _instanceID)
+	{
+		m_instanceID = _instanceID;
+		Init();
 	};
 	Mover()
 	{
-		m_position = cyclone::Vector3(0, 10, 0);
-		m_size = 2.0;
-		m_particle = new cyclone::Particle();
-
-		m_particle->setPosition(5, 20, 0);	// 초기 위치
-		m_particle->setVelocity(0, 0, 0);	// 초기 속도
-		m_particle->setMass(1.0f);			// 질량
-		m_particle->setDamping(0.9f);		// 댐핑
-		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
+		Init();
 	};
 	~Mover() {};
 
@@ -45,9 +54,7 @@ public:
 	cyclone::Vector3 m_position;
 	cyclone::Particle* m_particle;
 	float m_size;
-	cyclone::Vector3 m_position;
-	cyclone::Particle* m_particle;
-	float m_size;
+
 
 	void MovePosition(cyclone::Vector3 _position)
 	{
@@ -181,12 +188,7 @@ public:
 		static cyclone::Vector3 DEFAULT_POSITION = cyclone::Vector3(0, 3, 0);
 
 		m_particle->integrate(_delta_t);
-		//m_particle->setPosition(m_particle->getPosition() + cyclone::Vector3(0.5, 0, 0));
-		//m_particle->addForce(cyclone::Vector3(1,0,0));
-		if (CheckEdges())
-		{
-			MakeBounce();
-		}
+		MakeBounce(CheckEdge());
 	}
 
 
@@ -203,6 +205,12 @@ public:
 		{
 			glColor3f(1, 0, 0);
 		}
+
+		if(!shadow)
+			if (m_instanceID == -1)
+				glLoadName(0);
+			else
+				glLoadName(m_instanceID);
 
 		// 위치 이동, 로테이션, 크기변경과 같은 Transform을 변경하려변 glPushMatrix()와 glPopMatrix() 사이에 작성
 		glPushMatrix();
