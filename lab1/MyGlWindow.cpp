@@ -31,8 +31,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	float aspect = (w / (float)h);
 	m_viewer = new Viewer(viewPoint, viewCenter, upVector, 45.0f, aspect);
 
-	m_mover = new Mover();
-
+	m_movers.push_back(new Mover(cyclone::Vector3(0, 10, 0), 1));
 
 
 	TimingData::init();
@@ -183,10 +182,16 @@ void MyGlWindow::draw()
 
 	//draw shadow
 	setupShadows();
-	m_mover->draw(1);
+	for (int i = 0; i < m_movers.size(); i++)
+	{
+		m_movers[i]->draw(1);
+	}
 	unsetupShadows();
 
-	m_mover->draw(0);
+	for (int i = 0; i < m_movers.size(); i++)
+	{
+		m_movers[i]->draw(0);
+	}
 
 	glDisable(GL_BLEND);
 
@@ -220,7 +225,12 @@ void MyGlWindow::update()
 	float duration = (float)TimingData::get().lastFrameDuration * 0.003;
 	if (duration <= 0.0f) return;
 	
-	m_mover->Update(duration);
+
+	// update the simulation
+	for (int i = 0; i < m_movers.size(); i++)
+	{
+		m_movers[i]->Update(duration);
+	}
 }
 
 
@@ -250,6 +260,11 @@ void MyGlWindow::doPick()
 	glInitNames();
 	glPushName(0);
 
+
+	for (int i = 0; i < m_movers.size(); i++)
+	{
+		m_movers[i]->draw(0);
+	}
 	// draw the cubes, loading the names as we go
 	//for (size_t i = 0; i < world->points.size(); ++i) {
 	//	glLoadName((GLuint)(i + 1));
@@ -319,9 +334,11 @@ int MyGlWindow::handle(int e)
 		m_lastMouseX = Fl::event_x();
 		m_lastMouseY = Fl::event_y();
 
+		// 오른쪽 마우스 버튼 = 3
+		// 왼쪽 마우스 버튼 = 1
 		if (m_pressedMouseButton == 1) {
 			doPick();
-
+			// 레이 쏴서 맞은 오브젝트의 id값이 selected에 들어감
 			if (selected >= 0) {
 				std::cout << "picked" << std::endl;
 			}
@@ -351,6 +368,13 @@ int MyGlWindow::handle(int e)
 
 			double rx, ry, rz;
 
+			mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
+				static_cast<double>(m_movers[0]->m_position.x),
+				static_cast<double>(m_movers[0]->m_position.y),
+				static_cast<double>(m_movers[0]->m_position.z),
+				rx, ry, rz,
+				(Fl::event_state() & FL_CTRL) != 0);
+
 			/*	mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
 
 					static_cast<double>(m_simulation->particles[selected]->m_position.x),
@@ -359,7 +383,8 @@ int MyGlWindow::handle(int e)
 					rx, ry, rz,
 					(Fl::event_state() & FL_CTRL) != 0);*/
 
-			cyclone::Vector3 v(rx, ry, rz);
+			//cyclone::Vector3 v(rx, ry, rz);
+			m_movers[0]->m_particle->setPosition(cyclone::Vector3(rx, ry, rz));
 
 			damage(1);
 		}
@@ -463,7 +488,10 @@ void MyGlWindow::Step()
 	TimingData::get().update();
 
 	float duration = 0.06f;
-	m_mover->Update(duration);
+	for (int i = 0; i < m_movers.size(); i++)
+	{
+		m_movers[i]->Update(duration);
+	}
 	std::cout << "Step" << std::endl;
 }
 

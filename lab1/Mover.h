@@ -11,18 +11,33 @@
 
 class Mover
 {
+private:
+
+	int m_instanceID = -1;
+	void Init()
+	{
+		m_size = 2.0;
+		m_particle = new cyclone::Particle();
+		m_particle->setVelocity(0, 0, 0);	// 초기 속도
+		m_particle->setMass(1.0f);			// 질량
+		m_particle->setDamping(0.9f);		// 댐핑
+		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
+		m_meshColor = { 1.0f, 0.0f, 0.0f };	// 색상
+		m_shadowColor = { 0.2f, 0.2f, 0.2f };	// 그림자 색상
+		SetPosition(cyclone::Vector3(0, 10, 0));	// 초기 위치
+	}
 public:
 	// constructors
 	Mover(cyclone::Vector3 _position)
 	{
-		m_position = _position;
 		Init();
+		SetPosition(_position);
 	};
 	Mover(cyclone::Vector3 _position, int _instanceID)
 	{
-		m_position = _position;
 		m_instanceID = _instanceID;
 		Init();
+		SetPosition(_position);
 	};
 	Mover(int _instanceID)
 	{
@@ -42,21 +57,6 @@ private:
 		GLfloat g;
 		GLfloat b;
 	};
-
-	int m_instanceID = -1;
-	void Init()
-	{
-		m_position = cyclone::Vector3(0, 10, 0);
-		m_size = 2.0;
-		m_particle = new cyclone::Particle();
-		m_particle->setPosition(5, 20, 0);	// 초기 위치
-		m_particle->setVelocity(0, 0, 0);	// 초기 속도
-		m_particle->setMass(1.0f);			// 질량
-		m_particle->setDamping(0.9f);		// 댐핑
-		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
-		m_meshColor = { 1.0f, 0.0f, 0.0f };	// 색상
-		m_shadowColor = { 0.2f, 0.2f, 0.2f };	// 그림자 색상
-	}
 
 	void SetColor(GLfloat3 _color)	{ glColor3f(_color.r, _color.g, _color.b); }
 	bool CheckFloor()				{ return m_position.y - m_size < 0; }
@@ -155,9 +155,16 @@ public:
 	GLfloat3 m_shadowColor;
 
 
+	// 포지션 값은 무조건 여기서
+	void SetPosition(cyclone::Vector3 _position)
+	{
+		m_position = _position;
+		m_particle->setPosition(m_position);
+	}
+
 	void MovePosition(cyclone::Vector3 _position)
 	{
-		m_position += _position;
+		SetPosition(m_position + _position);
 	}
 
 	/// <summary>
@@ -198,13 +205,19 @@ public:
 			glColor3f(0.2, 0.2, 0.2);
 		}
 
+		if(!shadow)
+			if (m_instanceID == -1)
+				glLoadName(0);
+			else
+				glLoadName(m_instanceID);
+
 		// 이동 관련된 처리는 glPushMatrix()와 glPopMatrix() 사이에 처리해야 한다.
+		// 위치 이동, 로테이션, 크기변경과 같은 Transform을 변경하려변 glPushMatrix()와 glPopMatrix() 사이에 작성
 		glPushMatrix();
 		glTranslatef(m_position.x, m_position.y, m_position.z);
 		glutSolidSphere(m_size, 20, 20);
 		glPopMatrix();
 	}
-private:
 };
 
 #endif
