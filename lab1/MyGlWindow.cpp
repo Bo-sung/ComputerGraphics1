@@ -31,7 +31,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	float aspect = (w / (float)h);
 	m_viewer = new Viewer(viewPoint, viewCenter, upVector, 45.0f, aspect);
 
-	m_movers.push_back(new Mover(cyclone::Vector3(0, 10, 0), 1));
+	m_movers.push_back(new Mover(cyclone::Vector3(0, 50, 0), 10));
 
 
 	TimingData::init();
@@ -263,7 +263,7 @@ void MyGlWindow::doPick()
 
 	for (int i = 0; i < m_movers.size(); i++)
 	{
-		m_movers[i]->draw(0);
+		m_movers[i]->OnPick();
 	}
 	// draw the cubes, loading the names as we go
 	//for (size_t i = 0; i < world->points.size(); ++i) {
@@ -353,40 +353,87 @@ int MyGlWindow::handle(int e)
 	return 1;
 	case FL_RELEASE:
 		m_pressedMouseButton = -1;
+		if (selected >= 0) {
+			Mover* mover = NULL;
+			for (int i = 0; i < m_movers.size(); i++)
+			{
+				if (m_movers[i]->GetInstanceID() == selected + 1)
+				{
+					mover = m_movers[i];
+				}
+			}
+			if (mover != NULL)
+			{
+				// ½Ã¹Ä Àç°³
+				if (run == 0)
+				{
+					run = 1;
+					m_btn_run->value(1);
+				}
+				double r1x, r1y, r1z, r2x, r2y, r2z;
+				getMouseLine(r1x, r1y, r1z, r2x, r2y, r2z);
+
+				double rx, ry, rz;
+
+				mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
+					static_cast<double>(mover->m_position.x),
+					static_cast<double>(mover->m_position.y),
+					static_cast<double>(mover->m_position.z),
+					rx, ry, rz,
+					(Fl::event_state() & FL_CTRL) != 0);
+				mover->OnRelease(cyclone::Vector3(rx, ry, rz));
+
+				damage(1);
+			}
+			else
+			{
+				std::cout << "Can't Find Selected Elemet" << std::endl;
+			}
+		}
 		damage(1);
+		selected = -1;
 
 		return 1;
 	case FL_DRAG: // if the user drags the mouse
 	{
-
-
 		if (selected >= 0 && m_pressedMouseButton == 1) {
 
+			Mover* mover = NULL;
+			for (int i = 0; i < m_movers.size(); i++)
+			{
+				if (m_movers[i]->GetInstanceID() == selected+1)
+				{
+					mover = m_movers[i];
+				}
+			}
 
-			double r1x, r1y, r1z, r2x, r2y, r2z;
-			getMouseLine(r1x, r1y, r1z, r2x, r2y, r2z);
+			if (mover != NULL)
+			{
+				// ½Ã¹Ä ÁßÁö
+				if (run != 0)
+				{
+					run = 0;
+					m_btn_run->value(0);
+				}
+				double r1x, r1y, r1z, r2x, r2y, r2z;
+				getMouseLine(r1x, r1y, r1z, r2x, r2y, r2z);
 
-			double rx, ry, rz;
+				double rx, ry, rz;
 
-			mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
-				static_cast<double>(m_movers[0]->m_position.x),
-				static_cast<double>(m_movers[0]->m_position.y),
-				static_cast<double>(m_movers[0]->m_position.z),
-				rx, ry, rz,
-				(Fl::event_state() & FL_CTRL) != 0);
-
-			/*	mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
-
-					static_cast<double>(m_simulation->particles[selected]->m_position.x),
-					static_cast<double>(m_simulation->particles[selected]->m_position.y),
-					static_cast<double>(m_simulation->particles[selected]->m_position.z),
+				mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
+					static_cast<double>(mover->m_position.x),
+					static_cast<double>(mover->m_position.y),
+					static_cast<double>(mover->m_position.z),
 					rx, ry, rz,
-					(Fl::event_state() & FL_CTRL) != 0);*/
+					(Fl::event_state() & FL_CTRL) != 0);
+				mover->OnDrag(cyclone::Vector3(rx, ry, rz));
 
-			//cyclone::Vector3 v(rx, ry, rz);
-			m_movers[0]->m_particle->setPosition(cyclone::Vector3(rx, ry, rz));
-
-			damage(1);
+				damage(1);
+			}
+			else
+			{
+				std::cout << "Can't Find Selected Elemet" << std::endl;
+			}
 		}
 		else {
 

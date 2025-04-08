@@ -22,9 +22,6 @@ Fl_Group* widgets;
 
 long lastRedraw;
 int frameRate = 60;
-Fl_Light_Button* m_btn_run;
-Fl_Button* m_btn_test;
-Fl_Button* m_btn_step;
 
 void changeFrameCB(Fl_Widget* w, void* data)
 {
@@ -74,7 +71,7 @@ void OnClicked_btn_Step(Fl_Widget* o, void* data)
 	Fl_Button* b = (Fl_Button*)o; //캐스팅이 반드시 필요
 	MyGlWindow* win = (MyGlWindow*)data;
 
-	m_btn_run->value(0);
+	win->m_btn_run->value(0);
 	win->run = 0;
 	win->Step();
 }
@@ -106,15 +103,14 @@ int main()
 	choice->callback((Fl_Callback*)changeFrameCB, gl);
 
 
+	gl->m_btn_run = new Fl_Light_Button(width - 600, height - 40, 100, 20, "Run");
+	gl->m_btn_run->callback(OnClicked_btn_run, gl);
 
-	m_btn_run = new Fl_Light_Button(width - 600, height - 40, 100, 20, "Run");
-	m_btn_run->callback(OnClicked_btn_run, gl);
+	gl->m_btn_test = new Fl_Button(width - 400, height - 40, 100, 20, "Test");
+	gl->m_btn_test->callback(OnClicked_btn_test, gl);
 
-	m_btn_test = new Fl_Button(width - 400, height - 40, 100, 20, "Test");
-	m_btn_test->callback(OnClicked_btn_test, gl);
-
-	m_btn_step = new Fl_Button(width - 200, height - 40, 100, 20, "Step");
-	m_btn_step->callback(OnClicked_btn_Step, gl);
+	gl->m_btn_step = new Fl_Button(width - 200, height - 40, 100, 20, "Step");
+	gl->m_btn_step->callback(OnClicked_btn_Step, gl);
 
 
 	wind->end();

@@ -5,6 +5,8 @@
 #include <FL/Fl_Gl_Window.h>
 #include <Fl/Fl.h>
 #include <Fl/Fl_Value_Slider.H>
+#include <Fl/Fl_Button.h>
+#include <Fl/Fl_Light_Button.h>
 #include <windows.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -54,5 +56,11 @@ private:
 	void setProjection(int clearProjection = 1);
 	void getMouseNDC(float& x, float& y);
 	void setupLight(float x, float y, float z);
+
+public:
+	//Widgets
+	Fl_Light_Button* m_btn_run;
+	Fl_Button* m_btn_test;
+	Fl_Button* m_btn_step;
 };
 
