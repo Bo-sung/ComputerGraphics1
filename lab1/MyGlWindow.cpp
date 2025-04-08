@@ -458,3 +458,12 @@ void MyGlWindow::putText(char* string, int x, int y, float r, float g, float b)
 	glEnable(GL_LIGHTING);
 }
 
+void MyGlWindow::Step()
+{
+	TimingData::get().update();
+
+	float duration = 0.06f;
+	m_mover->Update(duration);
+	std::cout << "Step" << std::endl;
+}
+

@@ -36,6 +36,7 @@ public:
 	void drawStuff();
 	void doPick();
 	void test();
+	void Step();
 	int selected;
 
 private:

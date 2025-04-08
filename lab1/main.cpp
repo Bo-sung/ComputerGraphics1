@@ -22,22 +22,25 @@ Fl_Group* widgets;
 
 long lastRedraw;
 int frameRate = 60;
+Fl_Light_Button* m_btn_run;
+Fl_Button* m_btn_test;
+Fl_Button* m_btn_step;
 
-void changeFrameCB(Fl_Widget * w, void* data)
+void changeFrameCB(Fl_Widget* w, void* data)
 {
-	Fl_Choice * widget = (Fl_Choice *)w;
+	Fl_Choice* widget = (Fl_Choice*)w;
 	int i = widget->value();
-	const char * menu = widget->text(i);
+	const char* menu = widget->text(i);
 	frameRate = atoi(menu);
 
-	MyGlWindow * win = (MyGlWindow *)data;
+	MyGlWindow* win = (MyGlWindow*)data;
 	win->redraw();
 }
 
 
 void idleCB(void* w)
 {
-	MyGlWindow * win = (MyGlWindow *)w;
+	MyGlWindow* win = (MyGlWindow*)w;
 	if (clock() - lastRedraw > CLOCKS_PER_SEC / frameRate) {
 		lastRedraw = clock();
 		win->update();
@@ -46,10 +49,10 @@ void idleCB(void* w)
 }
 
 
-void but_cb(Fl_Widget* o, void*data)
+void OnClicked_btn_run(Fl_Widget* o, void* data)
 {
 	Fl_Button* b = (Fl_Button*)o; //캐스팅이 반드시 필요
-	MyGlWindow * win = (MyGlWindow *)data;
+	MyGlWindow* win = (MyGlWindow*)data;
 	if (b->value())
 		win->run = 1;
 	else
@@ -58,12 +61,22 @@ void but_cb(Fl_Widget* o, void*data)
 }
 
 
-void but_cb2(Fl_Widget* o, void*data)
+void OnClicked_btn_test(Fl_Widget* o, void* data)
 {
 	Fl_Button* b = (Fl_Button*)o; //캐스팅이 반드시 필요
-	MyGlWindow * win = (MyGlWindow *)data;
+	MyGlWindow* win = (MyGlWindow*)data;
 	win->test();
 	win->damage(1);
+}
+
+void OnClicked_btn_Step(Fl_Widget* o, void* data)
+{
+	Fl_Button* b = (Fl_Button*)o; //캐스팅이 반드시 필요
+	MyGlWindow* win = (MyGlWindow*)data;
+
+	m_btn_run->value(0);
+	win->run = 0;
+	win->Step();
 }
 
 int main()
@@ -94,13 +107,14 @@ int main()
 
 
 
-	Fl_Light_Button * test = new Fl_Light_Button(width - 600, height - 40, 100, 20, "Run");
-	test->callback(but_cb, gl);
+	m_btn_run = new Fl_Light_Button(width - 600, height - 40, 100, 20, "Run");
+	m_btn_run->callback(OnClicked_btn_run, gl);
 
+	m_btn_test = new Fl_Button(width - 400, height - 40, 100, 20, "Test");
+	m_btn_test->callback(OnClicked_btn_test, gl);
 
-
-	Fl_Button * test2 = new Fl_Button(width - 400, height - 40, 100, 20, "Test");
-	test2->callback(but_cb2, gl);
+	m_btn_step = new Fl_Button(width - 200, height - 40, 100, 20, "Step");
+	m_btn_step->callback(OnClicked_btn_Step, gl);
 
 
 	wind->end();
