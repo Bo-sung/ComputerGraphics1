@@ -21,6 +21,8 @@
 #include <vector>
 
 #include "core.h"
+#include "Mover.h"	
+#include "MySpring.h"
 #include "MoverConnection.h"
 
 
@@ -50,7 +52,8 @@ private:
 	float fieldOfView;
 	Viewer* m_viewer;
 
-	MoverConnection* m_moverConnection;
+	cyclone::MyAnchoredSpring *m_AnchorSpring;
+	AnchoredMoverConnection* m_AnchorMoverConnection;
 
 	void putText(char* string, int x, int y, float r, float g, float b);
 	void setProjection(int clearProjection = 1);

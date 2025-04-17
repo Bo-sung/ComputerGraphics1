@@ -31,8 +31,11 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	float aspect = (w / (float)h);
 	m_viewer = new Viewer(viewPoint, viewCenter, upVector, 45.0f, aspect);
 
-	m_moverConnection = new MoverConnection();
-
+	//m_mover = new Mover(cyclone::Vector3(0, 10, 0), 10);
+	m_AnchorMoverConnection = new AnchoredMoverConnection(cyclone::Vector3(5, 15, 5), cyclone::Vector3(5, 0, 5));
+	m_AnchorMoverConnection->AddMover(new Mover(cyclone::Vector3(0, 4, 0), 10));
+	m_AnchorMoverConnection->AddMover(new Mover(cyclone::Vector3(5, 4, 0), 11));
+	m_AnchorMoverConnection->AddMover(new Mover(cyclone::Vector3(0, 4, 5), 12));
 
 	TimingData::init();
 	run = 0;
@@ -175,18 +178,17 @@ void MyGlWindow::draw()
 	//
 	//
 
-
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
+
+
 	//draw shadow
 	setupShadows();
-
-	m_moverConnection->draw(1);
+	m_AnchorMoverConnection->draw(1);
 	unsetupShadows();
-
-	m_moverConnection->draw(0);
+	m_AnchorMoverConnection->draw(0);
 
 	glDisable(GL_BLEND);
 
@@ -222,7 +224,7 @@ void MyGlWindow::update()
 	
 	
 	// update the simulation
-	m_moverConnection->update(duration);
+	m_AnchorMoverConnection->update(duration);
 }
 
 
@@ -252,9 +254,9 @@ void MyGlWindow::doPick()
 	glInitNames();
 	glPushName(0);
 
-	for (int i = 0; i < m_moverConnection->m_movers.size(); i++)
+	for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
 	{
-		m_moverConnection->m_movers[i]->OnPick();
+		m_AnchorMoverConnection->m_movers[i]->OnPick();
 	}
 	// draw the cubes, loading the names as we go
 	//for (size_t i = 0; i < world->points.size(); ++i) {
@@ -346,11 +348,11 @@ int MyGlWindow::handle(int e)
 		m_pressedMouseButton = -1;
 		if (selected >= 0) {
 			Mover* mover = NULL;
-			for (int i = 0; i < m_moverConnection->m_movers.size(); i++)
+			for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
 			{
-				if (m_moverConnection->m_movers[i]->GetInstanceID() == selected + 1)
+				if (m_AnchorMoverConnection->m_movers[i]->GetInstanceID() == selected + 1)
 				{
-					mover = m_moverConnection->m_movers[i];
+					mover = m_AnchorMoverConnection->m_movers[i];
 				}
 			}
 			if (mover != NULL)
@@ -390,11 +392,11 @@ int MyGlWindow::handle(int e)
 		if (selected >= 0 && m_pressedMouseButton == 1) {
 
 			Mover* mover = NULL;
-			for (int i = 0; i < m_moverConnection->m_movers.size(); i++)
+			for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
 			{
-				if (m_moverConnection->m_movers[i]->GetInstanceID() == selected+1)
+				if (m_AnchorMoverConnection->m_movers[i]->GetInstanceID() == selected + 1)
 				{
-					mover = m_moverConnection->m_movers[i];
+					mover = m_AnchorMoverConnection->m_movers[i];
 				}
 			}
 
@@ -527,7 +529,7 @@ void MyGlWindow::Step()
 
 	float duration = 0.06f;
 
-	m_moverConnection->update(duration);
+	m_AnchorMoverConnection->update(duration);
 	std::cout << "Step" << std::endl;
 }
 

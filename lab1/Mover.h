@@ -21,8 +21,8 @@ private:
 		m_size = 2.0;
 		m_particle = new cyclone::Particle();
 		m_particle->setVelocity(0, 0, 0);	// 초기 속도
-		m_particle->setMass(10.0f);			// 질량
-		m_particle->setDamping(0.9f);		// 댐핑
+		m_particle->setMass(1.0f);			// 질량
+		m_particle->setDamping(0.7f);		// 댐핑
 		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
 		m_meshColor = { 1.0f, 0.0f, 0.0f };	// 색상
 		m_shadowColor = { 0.2f, 0.2f, 0.2f };	// 그림자 색상

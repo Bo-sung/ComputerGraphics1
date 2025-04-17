@@ -37,3 +37,35 @@ void MySpring::updateForce(Particle* p, real duration)
 	force = -springConstant * (d.magnitude() - restLength) * d;
 	p->addForce(force);
 }
+
+MyAnchoredSpring::MyAnchoredSpring()
+{
+	init(new cyclone::Vector3(0, 0, 0), 0, 0);
+}
+
+MyAnchoredSpring::MyAnchoredSpring(cyclone::Vector3* anchor, double springConstant, double restLength)
+{
+	init(anchor, springConstant, restLength);
+}
+
+void MyAnchoredSpring::init(cyclone::Vector3* anchor, double springConstant, double restLength)
+{
+	this->anchor = anchor;
+	this->springConstant = springConstant;
+	this->restLength = restLength;
+}
+
+void MyAnchoredSpring::updateForce(cyclone::Particle* particle, real duration)
+{
+	cyclone::Vector3 force;
+	// 고정 위치와 현재 파티클의 위치를 뺌 .
+	cyclone::Vector3 distance = particle->getPosition() - *anchor;
+	// 스프링 상수를 곱해 힘의 크기를 구함
+	auto forceMagnitude = -springConstant * (distance.magnitude() - restLength);
+	// 힘의 방향을 구하고, 위에서 구한 힘의 크기를 곱해, 최종 힘 벡터를 구함
+	force = distance;
+	force.normalise();
+
+	force *= forceMagnitude;
+	particle->addForce(force);
+}

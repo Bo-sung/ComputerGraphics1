@@ -24,3 +24,23 @@ public:
 	void update(float duration);
 	void draw(int shadow);
 };
+
+class AnchoredMoverConnection
+{
+public:
+	AnchoredMoverConnection();
+	AnchoredMoverConnection(cyclone::Vector3 _anchorTop, cyclone::Vector3 _anchorBottom);
+	~AnchoredMoverConnection();
+	void Init(cyclone::Vector3 _anchorTop, cyclone::Vector3 _anchorBottom);
+	cyclone::Vector3 m_anchorTop;
+	cyclone::Vector3 m_anchorBottom;
+	cyclone::ParticleForceRegistry* m_forces;
+	cyclone::ParticleGravity* m_gravity;
+
+	std::vector<Mover*> m_movers;
+	std::vector<cyclone::MyAnchoredSpring*> m_springs;
+
+	void AddMover(Mover* mover);
+	void update(float duration);
+	void draw(int shadow);
+};
