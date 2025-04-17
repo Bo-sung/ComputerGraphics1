@@ -9,7 +9,6 @@
 
 #include "core.h"
 #include "particle.h"
-#include "pfgen.h"
 
 
 class Mover
@@ -22,17 +21,9 @@ private:
 		m_size = 2.0;
 		m_particle = new cyclone::Particle();
 		m_particle->setVelocity(0, 0, 0);	// 초기 속도
-		m_particle->setMass(1.0f);			// 질량
-		m_particle->setDamping(1);		// 댐핑
-		m_particle->setAcceleration(0, 0, 0);	// 초기 가속도
-
-		m_gravity = new cyclone::ParticleGravity(cyclone::Vector3::GRAVITY);	// 중력
-		m_drag = new cyclone::ParticleDrag(0.01f, 0.01f);	// 드래그
-
-		m_forces = new cyclone::ParticleForceRegistry();
-		m_forces->add(m_particle, m_gravity);
-		m_forces->add(m_particle, m_drag);
-
+		m_particle->setMass(10.0f);			// 질량
+		m_particle->setDamping(0.9f);		// 댐핑
+		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
 		m_meshColor = { 1.0f, 0.0f, 0.0f };	// 색상
 		m_shadowColor = { 0.2f, 0.2f, 0.2f };	// 그림자 색상
 		SetPosition(cyclone::Vector3(0, 10, 0));	// 초기 위치
@@ -75,12 +66,12 @@ private:
 	cyclone::Vector3 m_LastPickPos;
 	clock_t m_LastPickTime;
 
-	void SetColor(GLfloat3 _color)	{ glColor3f(_color.r, _color.g, _color.b); }
-	bool CheckFloor()				{ return m_position.y - m_size < 0; }
-	bool CheckMapBoundX()			{ return m_position.x > MAX_AREA || m_position.x < -MAX_AREA; }
-	bool CheckMapBoundZ()			{ return m_position.z > MAX_AREA || m_position.z < -MAX_AREA; }
-	bool CheckMapBound()			{ return CheckMapBoundX() || CheckMapBoundZ(); }
-	bool CheckEdges()				{ return CheckFloor() || CheckMapBound(); }
+	void SetColor(GLfloat3 _color) { glColor3f(_color.r, _color.g, _color.b); }
+	bool CheckFloor() { return m_position.y - m_size < 0; }
+	bool CheckMapBoundX() { return m_position.x > MAX_AREA || m_position.x < -MAX_AREA; }
+	bool CheckMapBoundZ() { return m_position.z > MAX_AREA || m_position.z < -MAX_AREA; }
+	bool CheckMapBound() { return CheckMapBoundX() || CheckMapBoundZ(); }
+	bool CheckEdges() { return CheckFloor() || CheckMapBound(); }
 
 	enum BounceType
 	{
@@ -111,7 +102,7 @@ private:
 		m_particle->getPosition(&checkposition);
 		m_particle->getVelocity(&vel);
 
-		if ((_colAt&BounceType::BOUNCE_FLOOR) == BounceType::BOUNCE_FLOOR)
+		if ((_colAt & BounceType::BOUNCE_FLOOR) == BounceType::BOUNCE_FLOOR)
 		{
 			checkposition.y = m_size;
 			m_particle->setPosition(checkposition);
@@ -145,11 +136,6 @@ public:
 	cyclone::Vector3 m_position;
 	cyclone::Particle* m_particle;
 
-	cyclone::ParticleGravity* m_gravity;
-	cyclone::ParticleDrag* m_drag;
-
-	cyclone::ParticleForceRegistry* m_forces;
-
 	// variables
 	float m_size;
 	GLfloat3 m_meshColor;
@@ -176,7 +162,6 @@ public:
 	{
 		static cyclone::Vector3 DEFAULT_POSITION = cyclone::Vector3(0, 3, 0);
 
-		m_forces->updateForces(_delta_t);
 		m_particle->integrate(_delta_t);
 		m_particle->getPosition(&m_position);
 		if (!m_IsDragging)
@@ -216,7 +201,7 @@ public:
 		if (time == 0)
 			time = 1;
 		cyclone::Vector3 v = distance / time;
-		std::cout << "time : " << time <<  " distance : " << distance.toString() << " Velocity : " << v.toString() << std::endl;
+		std::cout << "time : " << time << " distance : " << distance.toString() << " Velocity : " << v.toString() << std::endl;
 		m_particle->setVelocity(v);
 	}
 

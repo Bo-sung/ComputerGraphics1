@@ -31,7 +31,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	float aspect = (w / (float)h);
 	m_viewer = new Viewer(viewPoint, viewCenter, upVector, 45.0f, aspect);
 
-	m_movers.push_back(new Mover(cyclone::Vector3(0, 50, 0), 10));
+	m_moverConnection = new MoverConnection();
 
 
 	TimingData::init();
@@ -182,16 +182,11 @@ void MyGlWindow::draw()
 
 	//draw shadow
 	setupShadows();
-	for (int i = 0; i < m_movers.size(); i++)
-	{
-		m_movers[i]->draw(1);
-	}
+
+	m_moverConnection->draw(1);
 	unsetupShadows();
 
-	for (int i = 0; i < m_movers.size(); i++)
-	{
-		m_movers[i]->draw(0);
-	}
+	m_moverConnection->draw(0);
 
 	glDisable(GL_BLEND);
 
@@ -225,12 +220,9 @@ void MyGlWindow::update()
 	float duration = (float)TimingData::get().lastFrameDuration * 0.003;
 	if (duration <= 0.0f) return;
 	
-
+	
 	// update the simulation
-	for (int i = 0; i < m_movers.size(); i++)
-	{
-		m_movers[i]->Update(duration);
-	}
+	m_moverConnection->update(duration);
 }
 
 
@@ -260,10 +252,9 @@ void MyGlWindow::doPick()
 	glInitNames();
 	glPushName(0);
 
-
-	for (int i = 0; i < m_movers.size(); i++)
+	for (int i = 0; i < m_moverConnection->m_movers.size(); i++)
 	{
-		m_movers[i]->OnPick();
+		m_moverConnection->m_movers[i]->OnPick();
 	}
 	// draw the cubes, loading the names as we go
 	//for (size_t i = 0; i < world->points.size(); ++i) {
@@ -355,11 +346,11 @@ int MyGlWindow::handle(int e)
 		m_pressedMouseButton = -1;
 		if (selected >= 0) {
 			Mover* mover = NULL;
-			for (int i = 0; i < m_movers.size(); i++)
+			for (int i = 0; i < m_moverConnection->m_movers.size(); i++)
 			{
-				if (m_movers[i]->GetInstanceID() == selected + 1)
+				if (m_moverConnection->m_movers[i]->GetInstanceID() == selected + 1)
 				{
-					mover = m_movers[i];
+					mover = m_moverConnection->m_movers[i];
 				}
 			}
 			if (mover != NULL)
@@ -399,11 +390,11 @@ int MyGlWindow::handle(int e)
 		if (selected >= 0 && m_pressedMouseButton == 1) {
 
 			Mover* mover = NULL;
-			for (int i = 0; i < m_movers.size(); i++)
+			for (int i = 0; i < m_moverConnection->m_movers.size(); i++)
 			{
-				if (m_movers[i]->GetInstanceID() == selected+1)
+				if (m_moverConnection->m_movers[i]->GetInstanceID() == selected+1)
 				{
-					mover = m_movers[i];
+					mover = m_moverConnection->m_movers[i];
 				}
 			}
 
@@ -535,10 +526,8 @@ void MyGlWindow::Step()
 	TimingData::get().update();
 
 	float duration = 0.06f;
-	for (int i = 0; i < m_movers.size(); i++)
-	{
-		m_movers[i]->Update(duration);
-	}
+
+	m_moverConnection->update(duration);
 	std::cout << "Step" << std::endl;
 }
 

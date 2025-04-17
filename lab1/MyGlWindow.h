@@ -21,7 +21,7 @@
 #include <vector>
 
 #include "core.h"
-#include "Mover.h"
+#include "MoverConnection.h"
 
 
 class MyGlWindow : public Fl_Gl_Window {
@@ -48,9 +48,9 @@ private:
 	int handle(int);				// standard FlTk
 
 	float fieldOfView;
-	Viewer *m_viewer;
+	Viewer* m_viewer;
 
-	std::vector<Mover*> m_movers;
+	MoverConnection* m_moverConnection;
 
 	void putText(char* string, int x, int y, float r, float g, float b);
 	void setProjection(int clearProjection = 1);
