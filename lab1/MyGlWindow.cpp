@@ -31,11 +31,7 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	float aspect = (w / (float)h);
 	m_viewer = new Viewer(viewPoint, viewCenter, upVector, 45.0f, aspect);
 
-	//m_mover = new Mover(cyclone::Vector3(0, 10, 0), 10);
-	m_AnchorMoverConnection = new AnchoredMoverConnection(cyclone::Vector3(5, 15, 5), cyclone::Vector3(5, 0, 5));
-	m_AnchorMoverConnection->AddMover(new Mover(cyclone::Vector3(0, 4, 0), 10));
-	m_AnchorMoverConnection->AddMover(new Mover(cyclone::Vector3(5, 4, 0), 11));
-	m_AnchorMoverConnection->AddMover(new Mover(cyclone::Vector3(0, 4, 5), 12));
+	m_fireworks = new Fireworks();
 
 	TimingData::init();
 	run = 0;
@@ -186,9 +182,9 @@ void MyGlWindow::draw()
 
 	//draw shadow
 	setupShadows();
-	m_AnchorMoverConnection->draw(1);
+	m_fireworks->draw(1);
 	unsetupShadows();
-	m_AnchorMoverConnection->draw(0);
+	m_fireworks->draw(0);
 
 	glDisable(GL_BLEND);
 
@@ -208,7 +204,7 @@ void MyGlWindow::draw()
 
 void MyGlWindow::test()
 {
-
+	m_fireworks->create();
 }
 
 void MyGlWindow::update()
@@ -224,7 +220,7 @@ void MyGlWindow::update()
 	
 	
 	// update the simulation
-	m_AnchorMoverConnection->update(duration);
+	m_fireworks->update(duration);
 }
 
 
@@ -254,10 +250,6 @@ void MyGlWindow::doPick()
 	glInitNames();
 	glPushName(0);
 
-	for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
-	{
-		m_AnchorMoverConnection->m_movers[i]->OnPick();
-	}
 	// draw the cubes, loading the names as we go
 	//for (size_t i = 0; i < world->points.size(); ++i) {
 	//	glLoadName((GLuint)(i + 1));
@@ -347,41 +339,41 @@ int MyGlWindow::handle(int e)
 	case FL_RELEASE:
 		m_pressedMouseButton = -1;
 		if (selected >= 0) {
-			Mover* mover = NULL;
-			for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
-			{
-				if (m_AnchorMoverConnection->m_movers[i]->GetInstanceID() == selected + 1)
-				{
-					mover = m_AnchorMoverConnection->m_movers[i];
-				}
-			}
-			if (mover != NULL)
-			{
-				// ½Ã¹Ä Àç°³
-				if (run == 0)
-				{
-					run = 1;
-					m_btn_run->value(1);
-				}
-				double r1x, r1y, r1z, r2x, r2y, r2z;
-				getMouseLine(r1x, r1y, r1z, r2x, r2y, r2z);
-
-				double rx, ry, rz;
-
-				mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
-					static_cast<double>(mover->m_position.x),
-					static_cast<double>(mover->m_position.y),
-					static_cast<double>(mover->m_position.z),
-					rx, ry, rz,
-					(Fl::event_state() & FL_CTRL) != 0);
-				mover->OnRelease(cyclone::Vector3(rx, ry, rz));
-
-				damage(1);
-			}
-			else
-			{
-				std::cout << "Can't Find Selected Elemet" << std::endl;
-			}
+			//Mover* mover = NULL;
+			//for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
+			//{
+			//	if (m_AnchorMoverConnection->m_movers[i]->GetInstanceID() == selected + 1)
+			//	{
+			//		mover = m_AnchorMoverConnection->m_movers[i];
+			//	}
+			//}
+			//if (mover != NULL)
+			//{
+			//	// ½Ã¹Ä Àç°³
+			//	if (run == 0)
+			//	{
+			//		run = 1;
+			//		m_btn_run->value(1);
+			//	}
+			//	double r1x, r1y, r1z, r2x, r2y, r2z;
+			//	getMouseLine(r1x, r1y, r1z, r2x, r2y, r2z);
+			//
+			//	double rx, ry, rz;
+			//
+			//	mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
+			//		static_cast<double>(mover->m_position.x),
+			//		static_cast<double>(mover->m_position.y),
+			//		static_cast<double>(mover->m_position.z),
+			//		rx, ry, rz,
+			//		(Fl::event_state() & FL_CTRL) != 0);
+			//	mover->OnRelease(cyclone::Vector3(rx, ry, rz));
+			//
+			//	damage(1);
+			//}
+			//else
+			//{
+			//	std::cout << "Can't Find Selected Elemet" << std::endl;
+			//}
 		}
 		damage(1);
 		selected = -1;
@@ -391,42 +383,42 @@ int MyGlWindow::handle(int e)
 	{
 		if (selected >= 0 && m_pressedMouseButton == 1) {
 
-			Mover* mover = NULL;
-			for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
-			{
-				if (m_AnchorMoverConnection->m_movers[i]->GetInstanceID() == selected + 1)
-				{
-					mover = m_AnchorMoverConnection->m_movers[i];
-				}
-			}
-
-			if (mover != NULL)
-			{
-				// ½Ã¹Ä ÁßÁö
-				if (run != 0)
-				{
-					run = 0;
-					m_btn_run->value(0);
-				}
-				double r1x, r1y, r1z, r2x, r2y, r2z;
-				getMouseLine(r1x, r1y, r1z, r2x, r2y, r2z);
-
-				double rx, ry, rz;
-
-				mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
-					static_cast<double>(mover->m_position.x),
-					static_cast<double>(mover->m_position.y),
-					static_cast<double>(mover->m_position.z),
-					rx, ry, rz,
-					(Fl::event_state() & FL_CTRL) != 0);
-				mover->OnDrag(cyclone::Vector3(rx, ry, rz));
-
-				damage(1);
-			}
-			else
-			{
-				std::cout << "Can't Find Selected Elemet" << std::endl;
-			}
+			//Mover* mover = NULL;
+			//for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
+			//{
+			//	if (m_AnchorMoverConnection->m_movers[i]->GetInstanceID() == selected + 1)
+			//	{
+			//		mover = m_AnchorMoverConnection->m_movers[i];
+			//	}
+			//}
+			//
+			//if (mover != NULL)
+			//{
+			//	// ½Ã¹Ä ÁßÁö
+			//	if (run != 0)
+			//	{
+			//		run = 0;
+			//		m_btn_run->value(0);
+			//	}
+			//	double r1x, r1y, r1z, r2x, r2y, r2z;
+			//	getMouseLine(r1x, r1y, r1z, r2x, r2y, r2z);
+			//
+			//	double rx, ry, rz;
+			//
+			//	mousePoleGo(r1x, r1y, r1z, r2x, r2y, r2z,
+			//		static_cast<double>(mover->m_position.x),
+			//		static_cast<double>(mover->m_position.y),
+			//		static_cast<double>(mover->m_position.z),
+			//		rx, ry, rz,
+			//		(Fl::event_state() & FL_CTRL) != 0);
+			//	mover->OnDrag(cyclone::Vector3(rx, ry, rz));
+			//
+			//	damage(1);
+			//}
+			//else
+			//{
+			//	std::cout << "Can't Find Selected Elemet" << std::endl;
+			//}
 		}
 		else {
 
@@ -529,7 +521,7 @@ void MyGlWindow::Step()
 
 	float duration = 0.06f;
 
-	m_AnchorMoverConnection->update(duration);
+	m_fireworks->update(duration);
 	std::cout << "Step" << std::endl;
 }
 

@@ -21,9 +21,8 @@
 #include <vector>
 
 #include "core.h"
-#include "Mover.h"	
-#include "MySpring.h"
-#include "MoverConnection.h"
+#include "Fire.h"
+#include "Fireworks.h"
 
 
 class MyGlWindow : public Fl_Gl_Window {
@@ -52,8 +51,8 @@ private:
 	float fieldOfView;
 	Viewer* m_viewer;
 
-	cyclone::MyAnchoredSpring *m_AnchorSpring;
-	AnchoredMoverConnection* m_AnchorMoverConnection;
+	//std::vector<Fire*> fireworks;
+	Fireworks * m_fireworks;
 
 	void putText(char* string, int x, int y, float r, float g, float b);
 	void setProjection(int clearProjection = 1);
