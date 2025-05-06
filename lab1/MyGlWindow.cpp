@@ -138,19 +138,19 @@ void MyGlWindow::draw()
 	glBegin(GL_LINES);
 
 	// Y Ãà : »¡°­
-	glColor3f(1, 0, 0);
-	glVertex3f(0, 0.1, 0);
-	glVertex3f(0, 100, 0);
-
-	// X Ãà : ³ì»ö
-	glColor3f(0, 1, 0);
-	glVertex3f(0, 0.1, 0);
-	glVertex3f(100, 0.1, 0);
-
-	// Z Ãà : ÆÄ¶û
-	glColor3f(0, 0, 1);
-	glVertex3f(0, 0.1, 0);
-	glVertex3f(0, 0.1, 100);
+	//glColor3f(1, 0, 0);
+	//glVertex3f(0, 0.1, 0);
+	//glVertex3f(0, 100, 0);
+	//
+	//// X Ãà : ³ì»ö
+	//glColor3f(0, 1, 0);
+	//glVertex3f(0, 0.1, 0);
+	//glVertex3f(100, 0.1, 0);
+	//
+	//// Z Ãà : ÆÄ¶û
+	//glColor3f(0, 0, 1);
+	//glVertex3f(0, 0.1, 0);
+	//glVertex3f(0, 0.1, 100);
 
 	glEnd();
 	glLineWidth(1.0f);

@@ -214,7 +214,7 @@ public:
 		if (!shadow)
 		{
 			// 색상 설정
-			SetColor(m_meshColor);
+			glColor3f(m_meshColor.r, m_meshColor.g, m_meshColor.b);
 			if (m_instanceID == -1)
 			{
 				glLoadName(0);
@@ -226,7 +226,7 @@ public:
 		}
 		else
 		{
-			SetColor(m_shadowColor);
+			glColor3f(m_shadowColor.r, m_shadowColor.g, m_shadowColor.b);
 		}
 
 		// 이동 관련된 처리는 glPushMatrix()와 glPopMatrix() 사이에 처리해야 한다.
