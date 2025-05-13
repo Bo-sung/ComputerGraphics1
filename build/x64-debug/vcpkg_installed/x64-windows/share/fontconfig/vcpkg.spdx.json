@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/fontconfig-x64-windows-2.15.0#2-f468e6e7-4d3f-412c-8ecb-6c52c2f16dcd",
-  "name": "fontconfig:x64-windows@2.15.0#2 bb809c0888a0c4d1f2264c35b1e31e7cc987ccc97f41f00cb351710f0e42e7c8",
+  "documentNamespace": "https://spdx.org/spdxdocs/fontconfig-x64-windows-2.15.0#2-67c45c10-861f-4306-a282-219555d94d79",
+  "name": "fontconfig:x64-windows@2.15.0#2 9a94d86781e085afcc6ccf3ac8f5c4250bb717c65742fb174c598054b41d86fa",
   "creationInfo": {
     "creators": [
       "Tool: vcpkg-2025-02-11-bec4296bf5289dc9ce83b4f5095943e44162f9c2"
     ],
-    "created": "2025-03-25T02:46:42Z"
+    "created": "2025-04-03T07:50:20Z"
   },
   "relationships": [
     {
@@ -119,7 +119,7 @@
     {
       "name": "fontconfig:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "bb809c0888a0c4d1f2264c35b1e31e7cc987ccc97f41f00cb351710f0e42e7c8",
+      "versionInfo": "9a94d86781e085afcc6ccf3ac8f5c4250bb717c65742fb174c598054b41d86fa",
       "downloadLocation": "NONE",
       "licenseConcluded": "MIT",
       "licenseDeclared": "NOASSERTION",

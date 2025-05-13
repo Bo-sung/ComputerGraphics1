@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/brotli-x64-windows-1.1.0#1-3ddea8d1-447f-4d0c-926e-9c6a11ebb90a",
-  "name": "brotli:x64-windows@1.1.0#1 0fd4e45b0b822b5f7f717198c07941ca44569776e6a6017b1a1be1e91f6d508a",
+  "documentNamespace": "https://spdx.org/spdxdocs/brotli-x64-windows-1.1.0#1-4dd651fe-6558-4c68-9ec8-5aa8682dfab9",
+  "name": "brotli:x64-windows@1.1.0#1 4c5178098f5890b8695f87aed66141798210eac14bb5f365665749f2ddcfbe24",
   "creationInfo": {
     "creators": [
       "Tool: vcpkg-2025-02-11-bec4296bf5289dc9ce83b4f5095943e44162f9c2"
     ],
-    "created": "2025-03-25T02:43:56Z"
+    "created": "2025-04-03T07:46:49Z"
   },
   "relationships": [
     {
@@ -109,7 +109,7 @@
     {
       "name": "brotli:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "0fd4e45b0b822b5f7f717198c07941ca44569776e6a6017b1a1be1e91f6d508a",
+      "versionInfo": "4c5178098f5890b8695f87aed66141798210eac14bb5f365665749f2ddcfbe24",
       "downloadLocation": "NONE",
       "licenseConcluded": "MIT",
       "licenseDeclared": "NOASSERTION",

@@ -2,7 +2,7 @@ Package: egl-registry
 Version: 2024-01-25
 Architecture: x64-windows
 Multi-Arch: same
-Abi: aee8e67689118c1f2d06710a9b35caa348c57899b3474afa0d3475f9201bbd85
+Abi: 5b5ea3fc4a0868b8b2a133608ac9ddef25555b5bba46dad64e139022e0d4d952
 Description: EGL API and Extension Registry
 Status: install ok installed
 
@@ -12,7 +12,7 @@ Port-Version: 1
 Depends: egl-registry
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 3c44f91a5abf54a43d659f38c5d4a7cff1aacfc161c9bc2b259bb42ba52c96f3
+Abi: 13d589a3d5e21091e1e41e9f60823de380a063fe647c5ce3fce0ac087ec35f28
 Description: OpenGL, OpenGL ES, and OpenGL ES-SC API and Extension Registry
 Status: install ok installed
 
@@ -22,7 +22,7 @@ Port-Version: 3
 Depends: opengl-registry
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 5ceed02a6eee511ecd948c1fe8d57db6a934dd953b59c0cc296de693d639fc62
+Abi: c09f9775e6ddef8f08d6b0d13a88ecc9b38e60a8669ebc7dbe0ad98283917c4a
 Description: Open Graphics Library (OpenGL)[3][4][5] is a cross-language, cross-platform application programming interface (API) for rendering 2D and 3D vector graphics.
 Status: install ok installed
 
@@ -30,7 +30,7 @@ Package: vcpkg-cmake
 Version: 2024-04-23
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 83948e4187f55ef909968a587303a6f537a48977c198b5ffa85657ac68d1fcb5
+Abi: 2d516b3349b232df388b356ac5b775e67258fd51d0724698e374d7aa04afb571
 Status: install ok installed
 
 Package: zlib
@@ -38,7 +38,7 @@ Version: 1.3.1
 Depends: vcpkg-cmake
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 4e2307373bef352e0129e56a0c4780496426c4097897358747698bdd188ac533
+Abi: 2171c80d7d71fb5fedf7803489a9b4a9fabca8a6293ac00c85d78644426f181c
 Description: A compression library
 Status: install ok installed
 
@@ -46,7 +46,7 @@ Package: vcpkg-cmake-config
 Version: 2024-05-23
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 1cc9e769c0a95e75ab3db858b03d73917b67c4299cb630c9eb125ba0e4190a38
+Abi: b22132efb0c174635e49ad8346fba42a84a8067103b9f7d36d12e432a52b958e
 Status: install ok installed
 
 Package: libpng
@@ -54,7 +54,7 @@ Version: 1.6.46
 Depends: vcpkg-cmake, vcpkg-cmake-config, zlib
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 986b0ce2a0e0e4841ea6137ca05ace8d0f99078ca00a1a8765690f899f57fe05
+Abi: c423d98a1876f5ba5045efb1310475ba2fb1b2ed1891a71cc86ae17ec62a602f
 Description: libpng is a library implementing an interface for reading and writing PNG (Portable Network Graphics) format files
 Status: install ok installed
 
@@ -64,7 +64,7 @@ Port-Version: 1
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 8557bde07e9505887bec0c6db854c7c066ad0f30a84da1068a831d7206f26201
+Abi: 2d6971f1c820a89c726dcb84086642dfa901d6a00152c5bb920d5c5c47670eae
 Description: libjpeg-turbo is a JPEG image codec that uses SIMD instructions (MMX, SSE2, NEON, AltiVec) to accelerate baseline JPEG compression and decompression on x86, x86-64, ARM, and PowerPC systems.
 Status: install ok installed
 
@@ -74,7 +74,7 @@ Port-Version: 6
 Depends: vcpkg-cmake
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 2ae3c5927fc8879f8b5a91fd112d2bc756f34bb61fbe41680ec344b3db16a390
+Abi: aed0b0f920c3e15fe15e01f046fc886ff5b84a5bdbe96408e6df95f66f0aae34
 Description: bzip2 is a freely available, patent free, high-quality data compressor. It typically compresses files to within 10% to 15% of the best available techniques (the PPM family of statistical compressors), whilst being around twice as fast at compression and six times faster at decompression.
 Default-Features: tool
 Status: install ok installed
@@ -92,7 +92,7 @@ Port-Version: 1
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 0fd4e45b0b822b5f7f717198c07941ca44569776e6a6017b1a1be1e91f6d508a
+Abi: 4c5178098f5890b8695f87aed66141798210eac14bb5f365665749f2ddcfbe24
 Description: a generic-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling.
 Status: install ok installed
 
@@ -101,7 +101,7 @@ Version: 2.13.3
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 7ea793072a94d40c35ebc12b93928e66e09d9731adb7aae2e2bf4d99e1f7a560
+Abi: a5e20596766fb41d334cab5543fdef921ae747d121e4006624660388e831c4f6
 Description: A library to render fonts.
 Default-Features: brotli, bzip2, png, zlib
 Status: install ok installed
@@ -143,7 +143,7 @@ Version: 2024-09-22
 Depends: vcpkg-cmake
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 4d17e25d0368dc8a23d97ebb169bb00464d5f004608ae9f5eb9048c5d32f0b61
+Abi: 9bd1e9b79a81ca409810c42a9b6f05901fb2e1ffe6e6c876c9f1953d64e9d5b3
 Status: install ok installed
 
 Package: vcpkg-tool-meson
@@ -151,7 +151,7 @@ Version: 1.6.1
 Depends: vcpkg-cmake-get-vars
 Architecture: x64-windows
 Multi-Arch: same
-Abi: b275175804c2c671a500cdf10c785c981e1e476ee5fd7ff268064a17122bafd3
+Abi: ecd81b59e931480242252f6e8cee1aabfd08edbe739f1c2e6ac0d760ae36efe2
 Description: Meson build system
 Status: install ok installed
 
@@ -161,7 +161,7 @@ Port-Version: 6
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: f4f99e5c4686c57461bcbf87893353301689edc57bb3b09f6b3847abe2bacf07
+Abi: eb376d7705285dad387a1c08f1b3e4e8921171f05b56ecacfc207533e5ca97eb
 Description: GNU perfect hash function generator
 Status: install ok installed
 
@@ -170,7 +170,7 @@ Version: 2.6.4
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: d58689701c12ddd300c881c5b4516aeacafdfef4eff29bc2b78811e1dbb986a9
+Abi: 8ce4bfe90920b5be2540d04f94ce640354d776097c76eebbbd500a0d2f2b6f1f
 Description: XML parser library written in C
 Status: install ok installed
 
@@ -178,7 +178,7 @@ Package: dirent
 Version: 1.24
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 2141fb61741a99359e2372929aeeaae1cab016377549b0b942f6807fcc6cabfa
+Abi: 34607b011c5cdf3116314ccb8d071bd43ec4d555a76b3cef2ba237c3daf5869b
 Description: Dirent is a C/C++ programming interface that allows programmers to retrieve information about files and directories under Linux/UNIX. This project provides Linux compatible Dirent interface for Microsoft Windows.
 Status: install ok installed
 
@@ -188,7 +188,7 @@ Port-Version: 2
 Depends: dirent, expat, freetype, gperf, vcpkg-tool-meson
 Architecture: x64-windows
 Multi-Arch: same
-Abi: bb809c0888a0c4d1f2264c35b1e31e7cc987ccc97f41f00cb351710f0e42e7c8
+Abi: 9a94d86781e085afcc6ccf3ac8f5c4250bb717c65742fb174c598054b41d86fa
 Description: Library for configuring and customizing font access.
 Status: install ok installed
 
@@ -197,7 +197,7 @@ Version: 1.3.11
 Depends: fontconfig, freetype, libjpeg-turbo, libpng, vcpkg-cmake, vcpkg-cmake-config, zlib
 Architecture: x64-windows
 Multi-Arch: same
-Abi: da0b81f966ccd9de4d7e01f20ff9024960f7a5b713c0cfc7486dd4af94a2ddda
+Abi: d85a4e4201cbdcc5f0244ebb46b2914d3ced6224ef6a9c36286493f7d58f6e0e
 Description: FLTK (pronounced fulltick) is a cross-platform C++ GUI toolkit for UNIX/Linux (X11), Microsoft Windows, and MacOS X. FLTK provides modern GUI functionality without the bloat and supports 3D graphics via OpenGL and its built-in GLUT emulation.
 Default-Features: opengl
 Status: install ok installed
@@ -216,7 +216,7 @@ Port-Version: 3
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: c52aa7dc4f0c2edadfd7a4e454bb475964098a3cd3495154da98982a03534c72
+Abi: 2902b53e58a91e02d6b8cdd4b9ad0a78b1d7c58a8e684d48a7bc55ef78357e56
 Description: OpenGL Mathematics (GLM)
 Status: install ok installed
 

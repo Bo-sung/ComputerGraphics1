@@ -157,25 +157,6 @@ void MyGlWindow::draw()
 	glEnd();
 	glLineWidth(1.0f);
 
-	//glLineWidth(3.0f);
-	//glBegin(GL_LINES);
-	//
-	//glColor3f(0, 0, 1);
-	//glVertex3f(0, 0, 0);
-	//glVertex3f(0, 5, 5);
-	//
-	//glColor3f(0, 1, 1);
-	//glVertex3f(0, 5, 5);
-	//glVertex3f(5, 0, 5);
-	//
-	//glColor3f(1, 1, 1);
-	//glVertex3f(5, 0, 5);
-	//glVertex3f(0, 0, 0);
-	//glEnd();
-	//glLineWidth(1.0f);
-	//
-	//
-
 
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
@@ -186,9 +167,13 @@ void MyGlWindow::draw()
 	m_mover->draw(1);
 	unsetupShadows();
 
-	m_mover->draw(0);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_BLEND);
+	drawStuff();
+
 
 	glDisable(GL_BLEND);
+	m_mover->draw(0);
 
 	putText("Bosung", 10, 10, 1, 1, 0);
 

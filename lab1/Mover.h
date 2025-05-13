@@ -1,4 +1,4 @@
-#ifndef __MOVER_H
+ï»¿#ifndef __MOVER_H
 #define __MOVER_H
 
 #include <Windows.h>
@@ -20,11 +20,11 @@ public:
 		m_size = 2.0;
 		m_particle = new cyclone::Particle();
 
-		m_particle->setPosition(5, 20, 0);	// ÃÊ±â À§Ä¡
-		m_particle->setVelocity(0, 0, 0);	// ÃÊ±â ¼Óµµ
-		m_particle->setMass(1.0f);			// Áú·®
-		m_particle->setDamping(0.9f);		// ´ïÇÎ
-		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// ÃÊ±â °¡¼Óµµ
+		m_particle->setPosition(5, 20, 0);	// ì´ˆê¸° ìœ„ì¹˜
+		m_particle->setVelocity(0, 0, 0);	// ì´ˆê¸° ì†ë„
+		m_particle->setMass(1.0f);			// ì§ˆëŸ‰
+		m_particle->setDamping(0.9f);		// ëŒí•‘
+		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// ì´ˆê¸° ê°€ì†ë„
 	};
 	Mover()
 	{
@@ -32,11 +32,11 @@ public:
 		m_size = 2.0;
 		m_particle = new cyclone::Particle();
 
-		m_particle->setPosition(5, 20, 0);	// ÃÊ±â À§Ä¡
-		m_particle->setVelocity(0, 0, 0);	// ÃÊ±â ¼Óµµ
-		m_particle->setMass(1.0f);			// Áú·®
-		m_particle->setDamping(0.9f);		// ´ïÇÎ
-		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// ÃÊ±â °¡¼Óµµ
+		m_particle->setPosition(5, 20, 0);	// ì´ˆê¸° ìœ„ì¹˜
+		m_particle->setVelocity(0, 0, 0);	// ì´ˆê¸° ì†ë„
+		m_particle->setMass(1.5f);			// ì§ˆëŸ‰
+		m_particle->setDamping(0.9f);		// ëŒí•‘
+		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// ì´ˆê¸° ê°€ì†ë„
 	};
 	~Mover() {};
 
@@ -45,13 +45,63 @@ public:
 	cyclone::Vector3 m_position;
 	cyclone::Particle* m_particle;
 	float m_size;
-	cyclone::Vector3 m_position;
-	cyclone::Particle* m_particle;
-	float m_size;
+
+	cyclone::Vector3 PlaneEdge1 = cyclone::Vector3(20., 0., -25.);	// A
+	cyclone::Vector3 PlaneEdge2 = cyclone::Vector3(20., 0., 25.);	// B
+	cyclone::Vector3 PlaneEdge3 = cyclone::Vector3(-20., 30., 25.);	// C
+	cyclone::Vector3 PlaneEdge4 = cyclone::Vector3(-20., 30., -25.);	// D
 
 	void MovePosition(cyclone::Vector3 _position)
 	{
 		m_position += _position;
+	}
+
+	// ë©´ ë²•ì„  ë²¡í„°
+	cyclone::Vector3 GetPlaneNormal()
+	{
+		static cyclone::Vector3 result = cyclone::Vector3(0, 0, 0);
+
+		if(result != cyclone::Vector3(0, 0, 0))
+			return result;
+
+		//Pâ‚Pâ‚‚ = (xâ‚‚-xâ‚, yâ‚‚-yâ‚, zâ‚‚-zâ‚)
+		//Pâ‚Pâ‚ƒ = (xâ‚ƒ-xâ‚, yâ‚ƒ-yâ‚, zâ‚ƒ-zâ‚)
+		cyclone::Vector3 p2p1 = PlaneEdge2 - PlaneEdge1;
+		cyclone::Vector3 p3p1 = PlaneEdge3 - PlaneEdge1;
+		//n = Pâ‚Pâ‚‚ Ã— Pâ‚Pâ‚ƒë²•ì„  ë°±í„°
+		result = p3p1.cross(p2p1);
+		return result;
+	}
+
+	float GetPlaneConstant()
+	{
+		static float d = 0.0f;
+
+		if (d != 0.0f)
+			return d;
+
+		cyclone::Vector3 n = GetPlaneNormal();
+		//d = -(axâ‚ + byâ‚ + czâ‚)
+		d = -(n.x * PlaneEdge1.x + n.y * PlaneEdge1.y + n.z * PlaneEdge1.z);
+
+		return d;
+	}
+
+	bool CheckPlane()
+	{
+		cyclone::Vector3 n = GetPlaneNormal();
+		//d = -(axâ‚ + byâ‚ + czâ‚)
+		float d = GetPlaneConstant();
+		//ê±°ë¦¬ = |axâ‚€ + byâ‚€ + czâ‚€ + d| / âˆš(aÂ² + bÂ² + cÂ²)
+		float distance = abs(n.x * m_position.x + n.y * m_position.y + n.z * m_position.z + d) / sqrt(n.x * n.x + n.y * n.y + n.z * n.z);
+
+		printf("%f \n", distance);
+		if (distance < m_size)
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	bool CheckFloor()
@@ -92,6 +142,8 @@ public:
 			return true;
 		if (CheckMapBound())
 			return true;
+		if (CheckPlane())
+			return true;
 
 		return false;
 	}
@@ -123,7 +175,38 @@ public:
 		m_particle->getPosition(&checkposition);
 		m_particle->getVelocity(&vel);
 
-		if (CheckFloor())
+		if (CheckPlane())
+		{
+			cyclone::Vector3 n = GetPlaneNormal();
+			float d = GetPlaneConstant();
+
+			float distance = abs(n.x * m_position.x + n.y * m_position.y + n.z * m_position.z + d) / sqrt(n.x * n.x + n.y * n.y + n.z * n.z);
+
+			n.normalise();
+
+			distance = m_size - distance;
+			//v' = v - 2(vÂ·n)n
+
+			vel = vel - (2 * (vel * n) * n);
+			m_particle->setVelocity(vel);
+
+			m_particle->setPosition(checkposition + n * distance);
+		}
+
+		//if (CheckFloor())
+		//{
+		//	checkposition.y = m_size;
+		//	m_particle->setPosition(checkposition);
+		//	vel.y = vel.y * (-1);
+		//	m_particle->setVelocity(vel);
+		//}
+
+		BounceType flag = CheckEdge();
+
+		if (flag == BounceType::NONE)
+			return;
+
+		if (flag == BounceType::BOUNCE_FLOOR)
 		{
 			checkposition.y = m_size;
 			m_particle->setPosition(checkposition);
@@ -131,9 +214,20 @@ public:
 			m_particle->setVelocity(vel);
 		}
 
-		if (CheckMapBound())
+		if (flag == BounceType::BOUNCE_MAP_BOUND_X)
 		{
-			m_particle->setPosition(cyclone::Vector3(0, checkposition.y, 0));
+			checkposition.x -= m_size;
+			m_particle->setPosition(checkposition);
+			vel.x = vel.x * (-1);
+			m_particle->setVelocity(vel);
+		}
+
+		if (flag == BounceType::BOUNCE_MAP_BOUND_Z)
+		{
+			checkposition.z -= m_size;
+			m_particle->setPosition(checkposition);
+			vel.z = vel.z * (-1);
+			m_particle->setVelocity(vel);
 		}
 	}
 
@@ -173,7 +267,7 @@ public:
 
 
 	/// <summary>
-	/// ÀûºĞÇÏ´Â ÇÔ¼ö(delta_t)
+	/// ì ë¶„í•˜ëŠ” í•¨ìˆ˜(delta_t)
 	/// </summary>
 	/// <param name="duration"></param>
 	void Update(float _delta_t)
@@ -204,7 +298,7 @@ public:
 			glColor3f(1, 0, 0);
 		}
 
-		// À§Ä¡ ÀÌµ¿, ·ÎÅ×ÀÌ¼Ç, Å©±âº¯°æ°ú °°Àº TransformÀ» º¯°æÇÏ·Áº¯ glPushMatrix()¿Í glPopMatrix() »çÀÌ¿¡ ÀÛ¼º
+		// ìœ„ì¹˜ ì´ë™, ë¡œí…Œì´ì…˜, í¬ê¸°ë³€ê²½ê³¼ ê°™ì€ Transformì„ ë³€ê²½í•˜ë ¤ë³€ glPushMatrix()ì™€ glPopMatrix() ì‚¬ì´ì— ì‘ì„±
 		glPushMatrix();
 		glTranslatef(m_position.x, m_position.y, m_position.z);
 		glutSolidSphere(m_size, 20, 20);
