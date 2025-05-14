@@ -1,4 +1,4 @@
-
+﻿
 
 #include "MyGlWindow.h"
 
@@ -31,11 +31,12 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 	float aspect = (w / (float)h);
 	m_viewer = new Viewer(viewPoint, viewCenter, upVector, 45.0f, aspect);
 
-	//m_mover = new Mover(cyclone::Vector3(0, 10, 0), 10);
-	m_AnchorMoverConnection = new AnchoredMoverConnection(cyclone::Vector3(5, 15, 5), cyclone::Vector3(5, 0, 5));
-	m_AnchorMoverConnection->AddMover(new Mover(cyclone::Vector3(0, 4, 0), 10));
-	m_AnchorMoverConnection->AddMover(new Mover(cyclone::Vector3(5, 4, 0), 11));
-	m_AnchorMoverConnection->AddMover(new Mover(cyclone::Vector3(0, 4, 5), 12));
+	m_mover = new Mover(cyclone::Vector3(0, 10, 0));
+	cyclone::MyGroundContact* c = new cyclone::MyGroundContact();
+	c->init(m_mover->m_particle, 1.0);
+	m_contactGenerators.push_back(c);
+
+	m_resolver = new cyclone::ParticleContactResolver(1);
 
 	TimingData::init();
 	run = 0;
@@ -141,42 +142,23 @@ void MyGlWindow::draw()
 	glLineWidth(3.0f);
 	glBegin(GL_LINES);
 
-	// Y �� : ����
+	// Y 축 : 빨강
 	glColor3f(1, 0, 0);
 	glVertex3f(0, 0.1, 0);
 	glVertex3f(0, 100, 0);
 
-	// X �� : ���
+	// X 축 : 녹색
 	glColor3f(0, 1, 0);
 	glVertex3f(0, 0.1, 0);
 	glVertex3f(100, 0.1, 0);
 
-	// Z �� : �Ķ�
+	// Z 축 : 파랑
 	glColor3f(0, 0, 1);
 	glVertex3f(0, 0.1, 0);
 	glVertex3f(0, 0.1, 100);
 
 	glEnd();
 	glLineWidth(1.0f);
-
-	//glLineWidth(3.0f);
-	//glBegin(GL_LINES);
-	//
-	//glColor3f(0, 0, 1);
-	//glVertex3f(0, 0, 0);
-	//glVertex3f(0, 5, 5);
-	//
-	//glColor3f(0, 1, 1);
-	//glVertex3f(0, 5, 5);
-	//glVertex3f(5, 0, 5);
-	//
-	//glColor3f(1, 1, 1);
-	//glVertex3f(5, 0, 5);
-	//glVertex3f(0, 0, 0);
-	//glEnd();
-	//glLineWidth(1.0f);
-	//
-	//
 
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
@@ -186,9 +168,9 @@ void MyGlWindow::draw()
 
 	//draw shadow
 	setupShadows();
-	m_AnchorMoverConnection->draw(1);
+	m_mover->draw(1);
 	unsetupShadows();
-	m_AnchorMoverConnection->draw(0);
+	m_mover->draw(0);
 
 	glDisable(GL_BLEND);
 
@@ -221,10 +203,23 @@ void MyGlWindow::update()
 
 	float duration = (float)TimingData::get().lastFrameDuration * 0.003;
 	if (duration <= 0.0f) return;
-	
-	
+
+
 	// update the simulation
-	m_AnchorMoverConnection->update(duration);
+	m_mover->Update(duration);
+	unsigned int limit = maxPossibleContact; //이 경우에는 파티클 한 개와 바닥 뿐이므로 1로 설정
+	cyclone::ParticleContact* nextContact = m_contact; //cyclone::ParticleContact 배열의 시작포인터
+	for (std::vector<cyclone::ParticleContactGenerator*>::iterator g = m_contactGenerators.begin(); g != m_contactGenerators.end(); g++) //모든 particleContactGenerator에 대해…
+	{
+		unsigned used = (*g)->addContact(nextContact, limit); //만일 충돌이 일어난다면 정보저장 및 충돌처리 횟수가 used가 저장
+		limit -= used; //최대 횟수에서 used를 뺌
+		nextContact += used; //사용된 횟수만큼 포인터 이동(limit만큼 사용했으므로)
+		if (limit <= 0)
+			break; //남은게 없으면 반환
+	}
+	int num = maxPossibleContact - limit; //처리된 횟수 (이게 실제 사용된 양)
+	m_resolver->setIterations(num * 2); //얼마나 loop을 돌리나
+	m_resolver->resolveContacts(m_contact, num, duration);
 }
 
 
@@ -254,10 +249,7 @@ void MyGlWindow::doPick()
 	glInitNames();
 	glPushName(0);
 
-	for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
-	{
-		m_AnchorMoverConnection->m_movers[i]->OnPick();
-	}
+	m_mover->OnPick();
 	// draw the cubes, loading the names as we go
 	//for (size_t i = 0; i < world->points.size(); ++i) {
 	//	glLoadName((GLuint)(i + 1));
@@ -327,11 +319,11 @@ int MyGlWindow::handle(int e)
 		m_lastMouseX = Fl::event_x();
 		m_lastMouseY = Fl::event_y();
 
-		// ������ ���콺 ��ư = 3
-		// ���� ���콺 ��ư = 1
+		// 오른쪽 마우스 버튼 = 3
+		// 왼쪽 마우스 버튼 = 1
 		if (m_pressedMouseButton == 1) {
 			doPick();
-			// ���� ���� ���� ������Ʈ�� id���� selected�� ��
+			// 레이 쏴서 맞은 오브젝트의 id값이 selected에 들어감
 			if (selected >= 0) {
 				std::cout << "picked" << std::endl;
 			}
@@ -348,16 +340,13 @@ int MyGlWindow::handle(int e)
 		m_pressedMouseButton = -1;
 		if (selected >= 0) {
 			Mover* mover = NULL;
-			for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
+			if (m_mover->GetInstanceID() == selected + 1)
 			{
-				if (m_AnchorMoverConnection->m_movers[i]->GetInstanceID() == selected + 1)
-				{
-					mover = m_AnchorMoverConnection->m_movers[i];
-				}
+				mover = m_mover;
 			}
 			if (mover != NULL)
 			{
-				// �ù� �簳
+				// 시뮬 재개
 				if (run == 0)
 				{
 					run = 1;
@@ -392,17 +381,14 @@ int MyGlWindow::handle(int e)
 		if (selected >= 0 && m_pressedMouseButton == 1) {
 
 			Mover* mover = NULL;
-			for (int i = 0; i < m_AnchorMoverConnection->m_movers.size(); i++)
+			if (m_mover->GetInstanceID() == selected + 1)
 			{
-				if (m_AnchorMoverConnection->m_movers[i]->GetInstanceID() == selected + 1)
-				{
-					mover = m_AnchorMoverConnection->m_movers[i];
-				}
+				mover = m_mover;
 			}
 
 			if (mover != NULL)
 			{
-				// �ù� ����
+				// 시뮬 중지
 				if (run != 0)
 				{
 					run = 0;
@@ -529,7 +515,7 @@ void MyGlWindow::Step()
 
 	float duration = 0.06f;
 
-	m_AnchorMoverConnection->update(duration);
+	m_mover->Update(duration);
 	std::cout << "Step" << std::endl;
 }
 

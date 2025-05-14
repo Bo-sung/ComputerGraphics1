@@ -9,6 +9,7 @@
 
 #include "core.h"
 #include "particle.h"
+#include "pfgen.h"
 
 
 class Mover
@@ -21,9 +22,17 @@ private:
 		m_size = 2.0;
 		m_particle = new cyclone::Particle();
 		m_particle->setVelocity(0, 0, 0);	// 초기 속도
-		m_particle->setMass(1.0f);			// 질량
-		m_particle->setDamping(0.7f);		// 댐핑
-		m_particle->setAcceleration(cyclone::Vector3::GRAVITY);	// 초기 가속도
+		m_particle->setMass(5.0f);			// 질량
+		m_particle->setDamping(0.9);		// 댐핑
+		m_particle->setAcceleration(0, 0, 0);	// 초기 가속도
+
+		m_gravity = new cyclone::ParticleGravity(cyclone::Vector3::GRAVITY);	// 중력
+		m_drag = new cyclone::ParticleDrag(0.01f, 0.01f);	// 드래그
+
+		m_forces = new cyclone::ParticleForceRegistry();
+		m_forces->add(m_particle, m_gravity);
+		m_forces->add(m_particle, m_drag);
+
 		m_meshColor = { 1.0f, 0.0f, 0.0f };	// 색상
 		m_shadowColor = { 0.2f, 0.2f, 0.2f };	// 그림자 색상
 		SetPosition(cyclone::Vector3(0, 10, 0));	// 초기 위치
@@ -136,6 +145,11 @@ public:
 	cyclone::Vector3 m_position;
 	cyclone::Particle* m_particle;
 
+	cyclone::ParticleGravity* m_gravity;
+	cyclone::ParticleDrag* m_drag;
+
+	cyclone::ParticleForceRegistry* m_forces;
+
 	// variables
 	float m_size;
 	GLfloat3 m_meshColor;
@@ -162,6 +176,7 @@ public:
 	{
 		static cyclone::Vector3 DEFAULT_POSITION = cyclone::Vector3(0, 3, 0);
 
+		m_forces->updateForces(_delta_t);
 		m_particle->integrate(_delta_t);
 		m_particle->getPosition(&m_position);
 		if (!m_IsDragging)

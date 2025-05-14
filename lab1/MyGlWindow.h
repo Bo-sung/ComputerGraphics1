@@ -22,8 +22,7 @@
 
 #include "core.h"
 #include "Mover.h"	
-#include "MySpring.h"
-#include "MoverConnection.h"
+#include "MyContact.h"
 
 
 class MyGlWindow : public Fl_Gl_Window {
@@ -52,8 +51,17 @@ private:
 	float fieldOfView;
 	Viewer* m_viewer;
 
-	cyclone::MyAnchoredSpring *m_AnchorSpring;
-	AnchoredMoverConnection* m_AnchorMoverConnection;
+	Mover* m_mover;
+
+	cyclone::ParticleContact m_contact[2]; //contact 발생할 수 있는 충돌 수 = 2 (넉넉하게)
+	//각종 충돌을 위한 충돌생성기 : 위에 정의한 MyGroundContact 저장 위한 컨테이너
+	//그런데, 왜 type이 ParticleContactGenerator일까? => 일반적으로 상속받은 클래스의 경우
+	//parent 타입으로 설정함
+	std::vector<cyclone::ParticleContactGenerator*> m_contactGenerators;
+	//충돌 해결기 (impulse를 계산해서 속도를 변환시키고, 위치를 변경함)
+	cyclone::ParticleContactResolver* m_resolver;
+
+	int maxPossibleContact = 2; //충돌 발생할 수 있는 최대 수
 
 	void putText(char* string, int x, int y, float r, float g, float b);
 	void setProjection(int clearProjection = 1);
