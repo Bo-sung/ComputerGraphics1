@@ -444,3 +444,6 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,cmake,visualstudio
 build/x64-debug/
+out/
+CMakePresets.json
+vcpkg-configuration.json
