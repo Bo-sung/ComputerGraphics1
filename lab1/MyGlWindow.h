@@ -41,6 +41,7 @@ public:
 	void test();
 	void Step();
 	int selected;
+	void testValue(float v);
 
 private:
 	void draw();					// standard FlTk
@@ -51,15 +52,8 @@ private:
 	float fieldOfView;
 	Viewer* m_viewer;
 
-	Mover* m_mover;
+	std::vector<Mover *> m_moverList;
 
-	cyclone::ParticleContact m_contact[2]; //contact 발생할 수 있는 충돌 수 = 2 (넉넉하게)
-	//각종 충돌을 위한 충돌생성기 : 위에 정의한 MyGroundContact 저장 위한 컨테이너
-	//그런데, 왜 type이 ParticleContactGenerator일까? => 일반적으로 상속받은 클래스의 경우
-	//parent 타입으로 설정함
-	std::vector<cyclone::ParticleContactGenerator*> m_contactGenerators;
-	//충돌 해결기 (impulse를 계산해서 속도를 변환시키고, 위치를 변경함)
-	cyclone::ParticleContactResolver* m_resolver;
 
 	int maxPossibleContact = 2; //충돌 발생할 수 있는 최대 수
 
@@ -73,5 +67,6 @@ public:
 	Fl_Light_Button* m_btn_run;
 	Fl_Button* m_btn_test;
 	Fl_Button* m_btn_step;
+	Fl_Slider* m_sld_value;
 };
 

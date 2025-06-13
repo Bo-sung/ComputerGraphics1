@@ -26,18 +26,40 @@ private:
 		m_particle->setDamping(0.9);		// 댐핑
 		m_particle->setAcceleration(0, 0, 0);	// 초기 가속도
 
-		m_gravity = new cyclone::ParticleGravity(cyclone::Vector3::GRAVITY);	// 중력
-		m_drag = new cyclone::ParticleDrag(0.01f, 0.01f);	// 드래그
-
-		m_forces = new cyclone::ParticleForceRegistry();
-		m_forces->add(m_particle, m_gravity);
-		m_forces->add(m_particle, m_drag);
-
 		m_meshColor = { 1.0f, 0.0f, 0.0f };	// 색상
 		m_shadowColor = { 0.2f, 0.2f, 0.2f };	// 그림자 색상
 		SetPosition(cyclone::Vector3(0, 10, 0));	// 초기 위치
 	}
 public:
+
+	cyclone::Quaternion ChangeRotation(cyclone::Vector3 axis, float degree)
+	{
+		return ChangeRotation(axis, degree, m_position);
+	}
+
+	cyclone::Quaternion ChangeRotation(cyclone::Vector3 axis, float degree, cyclone::Vector3 pos)
+	{
+		cyclone::Quaternion q;
+		const float degrees2Radians = 3.141592f / 180;
+
+		q.r = cos(degrees2Radians * degree * 0.5);
+		cyclone::Vector3 v = axis * sin(degrees2Radians * degree * 0.5f);
+		q.i = v.x;
+		q.j = v.y;
+		q.k = v.z;
+
+		q.normalise();
+		q *= quaternion;
+		ChangeOrientationAndPos(q, pos);
+		quaternion = q;
+
+		return quaternion;
+	}
+
+	void ChangeOrientationAndPos(const cyclone::Quaternion& q, const cyclone::Vector3& pos)
+	{
+		m_transformMatrix.setOrientationAndPos(q, pos);
+	}
 	// constructors
 	Mover(cyclone::Vector3 _position)
 	{
@@ -71,6 +93,7 @@ private:
 		GLfloat b;
 	};
 
+	cyclone::Matrix4 m_transformMatrix;
 	bool m_IsDragging = false;
 	cyclone::Vector3 m_LastPickPos;
 	clock_t m_LastPickTime;
@@ -144,11 +167,7 @@ public:
 	// components
 	cyclone::Vector3 m_position;
 	cyclone::Particle* m_particle;
-
-	cyclone::ParticleGravity* m_gravity;
-	cyclone::ParticleDrag* m_drag;
-
-	cyclone::ParticleForceRegistry* m_forces;
+	cyclone::Quaternion quaternion;
 
 	// variables
 	float m_size;
@@ -175,8 +194,6 @@ public:
 	void Update(float _delta_t)
 	{
 		static cyclone::Vector3 DEFAULT_POSITION = cyclone::Vector3(0, 3, 0);
-
-		m_forces->updateForces(_delta_t);
 		m_particle->integrate(_delta_t);
 		m_particle->getPosition(&m_position);
 		if (!m_IsDragging)
@@ -220,35 +237,63 @@ public:
 		m_particle->setVelocity(v);
 	}
 
+	void getGLTransform(float matrix[16])
+	{
+		matrix[0] = (float)m_transformMatrix.data[0];
+		matrix[1] = (float)m_transformMatrix.data[4];
+		matrix[2] = (float)m_transformMatrix.data[8];
+		matrix[3] = 0;
+		matrix[4] = (float)m_transformMatrix.data[1];
+		matrix[5] = (float)m_transformMatrix.data[5];
+		matrix[6] = (float)m_transformMatrix.data[9];
+		matrix[7] = 0;
+		matrix[8] = (float)m_transformMatrix.data[2];
+		matrix[9] = (float)m_transformMatrix.data[6];
+		matrix[10] = (float)m_transformMatrix.data[10];
+		matrix[11] = 0;
+		matrix[12] = (float)m_transformMatrix.data[3];
+		matrix[13] = (float)m_transformMatrix.data[7];
+		matrix[14] = (float)m_transformMatrix.data[11];
+		matrix[15] = 1;
+
+	}
+
 	void draw(int shadow)
 	{
 		cyclone::Vector3 position;
 		m_particle->getPosition(&position);
 		m_position = position;
 
-		if (!shadow)
-		{
-			// 색상 설정
-			SetColor(m_meshColor);
-			if (m_instanceID == -1)
-			{
-				glLoadName(0);
-			}
-			else
-			{
-				glLoadName(m_instanceID);
-			}
-		}
-		else
-		{
-			SetColor(m_shadowColor);
+		GLfloat mat[16];
+		getGLTransform(mat); //transformMatrix로 부터 opengl용 행렬로 변경
+		if (!shadow) {
+			glPushMatrix();
+			glMultMatrixf(mat);
+			glLineWidth(3.0f);
+			glBegin(GL_LINES); //오브젝트에 3개축 그림
+			glColor3f(1, 0, 0);
+			glVertex3f(0, 0.1, 0);
+			glVertex3f(0, 10, 0);
+			glColor3f(0, 1, 0);
+			glVertex3f(0, 0.1, 0);
+			glVertex3f(10, 0.1, 0);
+			glColor3f(0, 0, 1);
+			glVertex3f(0, 0.1, 0);
+			glVertex3f(0, 0.1, 10);
+			glEnd();
+			glPopMatrix();
+			glLineWidth(1.0f);
 		}
 
-		// 이동 관련된 처리는 glPushMatrix()와 glPopMatrix() 사이에 처리해야 한다.
-		// 위치 이동, 로테이션, 크기변경과 같은 Transform을 변경하려변 glPushMatrix()와 glPopMatrix() 사이에 작성
+		if (shadow) { //그림자 구분
+			glColor3f(0.2f, 0.2f, 0.2f);
+		}
+		else {
+			glColor3f(1, 0., 0);
+		}
 		glPushMatrix();
-		glTranslatef(m_position.x, m_position.y, m_position.z);
-		glutSolidSphere(m_size, 20, 20);
+		glMultMatrixf(mat);
+		glutSolidCube(3.0f); //박스그리기
 		glPopMatrix();
 	}
 };

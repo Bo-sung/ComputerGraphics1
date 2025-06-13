@@ -100,6 +100,8 @@
 #include "precision.h"
 #include <string>
 #include <sstream>
+#include <cmath>
+#define TRIG_ANGLE_TOL 0.00001f
 /**
  * The cyclone namespace includes all cyclone functions and
  * classes. It is defined as a namespace to allow function and class
@@ -607,6 +609,19 @@ namespace cyclone {
         {
         }
 
+        Quaternion(const float angle, const Vector3 axis)
+        {
+            double cosAng = cos(angle / 2.0);
+            double sinAng = sin(angle / 2.0);
+            double norm = sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
+            i = axis[0] / norm;
+            j = axis[1] / norm;
+            k = axis[2] / norm;
+            r = cosAng; //w
+            i *= sinAng; //x
+            j *= sinAng; //y
+            k *= sinAng; //z
+        }
         /**
          * Normalises the quaternion to unit length, making it a valid
          * orientation quaternion.
@@ -627,6 +642,45 @@ namespace cyclone {
             i *= d;
             j *= d;
             k *= d;
+        }
+
+
+        static Quaternion slerp(const Quaternion& q1, const Quaternion& q2, float u)
+        {
+            Quaternion result;
+            float dotProd = q1.r * q2.r + q1.i * q2.i + q1.j * q2.j + q1.k * q2.k;
+            float theta;
+
+            if (dotProd < 0) {
+                theta = acos(-dotProd);
+            }
+            else {
+                theta = acos(dotProd);
+            }
+
+            float sinTheta = sin(theta);
+
+            if (fabs(sinTheta) < TRIG_ANGLE_TOL) {
+                result = q1;
+                return(result);
+            }
+
+            float coeff1 = sin((1.0 - u) * theta) / sinTheta;
+            float coeff2 = sin(u * theta) / sinTheta;
+
+            if (dotProd < 0) {
+                result.r = -coeff1 * q1.r + coeff2 * q2.r;
+                result.i = -coeff1 * q1.i + coeff2 * q2.i;
+                result.j = -coeff1 * q1.j + coeff2 * q2.j;
+                result.k = -coeff1 * q1.k + coeff2 * q2.k;
+            }
+            else {
+                result.r = coeff1 * q1.r + coeff2 * q2.r;
+                result.i = coeff1 * q1.i + coeff2 * q2.i;
+                result.j = coeff1 * q1.j + coeff2 * q2.j;
+                result.k = coeff1 * q1.k + coeff2 * q2.k;
+            }
+            return(result);
         }
 
         /**

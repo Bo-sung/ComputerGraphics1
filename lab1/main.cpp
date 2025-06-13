@@ -76,6 +76,14 @@ void OnClicked_btn_Step(Fl_Widget* o, void* data)
 	win->Step();
 }
 
+void OnChanged_sld_value(Fl_Widget* o, void* data)
+{
+	Fl_Value_Slider* b = (Fl_Value_Slider*)o; //캐스팅이 반드시 필요
+	MyGlWindow* win = (MyGlWindow*)data;
+	
+	win->testValue(b->value());
+}
+
 int main()
 {
 	Fl::scheme("plastic");// plastic
@@ -106,11 +114,15 @@ int main()
 	gl->m_btn_run = new Fl_Light_Button(width - 600, height - 40, 100, 20, "Run");
 	gl->m_btn_run->callback(OnClicked_btn_run, gl);
 
-	gl->m_btn_test = new Fl_Button(width - 400, height - 40, 100, 20, "Test");
+	gl->m_btn_test = new Fl_Button(width - 500, height - 40, 100, 20, "Test");
 	gl->m_btn_test->callback(OnClicked_btn_test, gl);
 
-	gl->m_btn_step = new Fl_Button(width - 200, height - 40, 100, 20, "Step");
+	gl->m_btn_step = new Fl_Button(width - 400, height - 40, 100, 20, "Step");
 	gl->m_btn_step->callback(OnClicked_btn_Step, gl);
+
+	gl->m_sld_value = new Fl_Value_Slider(width - 200, height - 40, 100, 20, "Value");
+	gl->m_sld_value->type(FL_HORIZONTAL);
+	gl->m_sld_value->callback(OnChanged_sld_value, gl);
 
 
 	wind->end();

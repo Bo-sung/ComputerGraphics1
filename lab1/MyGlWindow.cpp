@@ -30,13 +30,24 @@ MyGlWindow::MyGlWindow(int x, int y, int w, int h) :
 
 	float aspect = (w / (float)h);
 	m_viewer = new Viewer(viewPoint, viewCenter, upVector, 45.0f, aspect);
+	Mover * mover = new Mover(cyclone::Vector3(0, 10, 0));
+	Mover* mover2 = new Mover(cyclone::Vector3(0, 15, 0));
+	Mover* mover3 = new Mover(cyclone::Vector3(0, 20, 0));
+	m_moverList.push_back(mover);
+	m_moverList.push_back(mover2);
+	m_moverList.push_back(mover3);
 
-	m_mover = new Mover(cyclone::Vector3(0, 10, 0));
-	cyclone::MyGroundContact* c = new cyclone::MyGroundContact();
-	c->init(m_mover->m_particle, 1.0);
-	m_contactGenerators.push_back(c);
 
-	m_resolver = new cyclone::ParticleContactResolver(1);
+	cyclone::Quaternion qa, qb, qc;
+	cyclone::Vector3 posA = cyclone::Vector3(0, 1.5f, 0);
+	cyclone::Vector3 posC = cyclone::Vector3(0, 10.5f, 0);
+	float t = 0.5f;
+	qa = mover->ChangeRotation(cyclone::Vector3(0, 1, 0), 45.0f, posA);
+	qc = mover3->ChangeRotation(cyclone::Vector3(0, 1, 1), 45.0f, posC);
+
+	qb = cyclone::Quaternion::slerp(qa, qc, t);
+	cyclone::Vector3 posB = posC * t + posA * (1.0f - t);
+	mover2->ChangeOrientationAndPos(qb, posB);
 
 	TimingData::init();
 	run = 0;
@@ -168,9 +179,15 @@ void MyGlWindow::draw()
 
 	//draw shadow
 	setupShadows();
-	m_mover->draw(1);
+	for (int i = 0; i < m_moverList.size(); ++i)
+	{
+		m_moverList[i]->draw(1);
+	}
 	unsetupShadows();
-	m_mover->draw(0);
+	for (int i = 0; i < m_moverList.size(); ++i)
+	{
+		m_moverList[i]->draw(0);
+	}
 
 	glDisable(GL_BLEND);
 
@@ -206,20 +223,10 @@ void MyGlWindow::update()
 
 
 	// update the simulation
-	m_mover->Update(duration);
-	unsigned int limit = maxPossibleContact; //이 경우에는 파티클 한 개와 바닥 뿐이므로 1로 설정
-	cyclone::ParticleContact* nextContact = m_contact; //cyclone::ParticleContact 배열의 시작포인터
-	for (std::vector<cyclone::ParticleContactGenerator*>::iterator g = m_contactGenerators.begin(); g != m_contactGenerators.end(); g++) //모든 particleContactGenerator에 대해…
+	for (int i = 0; i < m_moverList.size(); ++i)
 	{
-		unsigned used = (*g)->addContact(nextContact, limit); //만일 충돌이 일어난다면 정보저장 및 충돌처리 횟수가 used가 저장
-		limit -= used; //최대 횟수에서 used를 뺌
-		nextContact += used; //사용된 횟수만큼 포인터 이동(limit만큼 사용했으므로)
-		if (limit <= 0)
-			break; //남은게 없으면 반환
+		m_moverList[i]->Update(duration);
 	}
-	int num = maxPossibleContact - limit; //처리된 횟수 (이게 실제 사용된 양)
-	m_resolver->setIterations(num * 2); //얼마나 loop을 돌리나
-	m_resolver->resolveContacts(m_contact, num, duration);
 }
 
 
@@ -249,7 +256,10 @@ void MyGlWindow::doPick()
 	glInitNames();
 	glPushName(0);
 
-	m_mover->OnPick();
+	for (int i = 0; i < m_moverList.size(); ++i)
+	{
+		m_moverList[i]->OnPick();
+	}
 	// draw the cubes, loading the names as we go
 	//for (size_t i = 0; i < world->points.size(); ++i) {
 	//	glLoadName((GLuint)(i + 1));
@@ -340,9 +350,12 @@ int MyGlWindow::handle(int e)
 		m_pressedMouseButton = -1;
 		if (selected >= 0) {
 			Mover* mover = NULL;
-			if (m_mover->GetInstanceID() == selected + 1)
+			for (int i = 0; i < m_moverList.size(); ++i)
 			{
-				mover = m_mover;
+				if (m_moverList[i]->GetInstanceID() == selected + 1)
+				{
+					mover = m_moverList[i];
+				}
 			}
 			if (mover != NULL)
 			{
@@ -381,9 +394,12 @@ int MyGlWindow::handle(int e)
 		if (selected >= 0 && m_pressedMouseButton == 1) {
 
 			Mover* mover = NULL;
-			if (m_mover->GetInstanceID() == selected + 1)
+			for (int i = 0; i < m_moverList.size(); ++i)
 			{
-				mover = m_mover;
+				if (m_moverList[i]->GetInstanceID() == selected + 1)
+				{
+					mover = m_moverList[i];
+				}
 			}
 
 			if (mover != NULL)
@@ -515,7 +531,24 @@ void MyGlWindow::Step()
 
 	float duration = 0.06f;
 
-	m_mover->Update(duration);
+	for (int i = 0; i < m_moverList.size(); ++i)
+	{
+		m_moverList[i]->Update(duration);
+	}
 	std::cout << "Step" << std::endl;
+}
+
+void MyGlWindow::testValue(float v)
+{
+	cyclone::Quaternion qa, qb, qc;
+	cyclone::Vector3 posA = cyclone::Vector3(0, 1.5f, 0);
+	cyclone::Vector3 posC = cyclone::Vector3(0, 10.5f, 0);
+	float t = v;
+	qa = m_moverList[0]->quaternion;
+	qc = m_moverList[2]->quaternion;
+
+	qb = cyclone::Quaternion::slerp(qa, qc, t);
+	cyclone::Vector3 posB = posC * t + posA * (1.0f - t);
+	m_moverList[1]->ChangeOrientationAndPos(qb, posB);
 }
 
